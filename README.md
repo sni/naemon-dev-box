@@ -4,6 +4,7 @@
 
   - OMD Labs Edition
     - include mon site with prometheus monitoring and grafana dashboard
+    - include dev site with naemon-core from git clone
 
 ## Usage
 
