@@ -1,0 +1,5 @@
+.vagrant/
+*.retry
+naemon-core/
+naemon-livestatus/
+omd/

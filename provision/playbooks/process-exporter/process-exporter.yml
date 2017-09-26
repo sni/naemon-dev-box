@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - stat: path=/omd/sites/mon/local/bin/process-exporter
+    register: bin_exists
+  - shell: go get github.com/ncabatoff/process-exporter
+    when: bin_exists.stat.exists == False
+  - shell: go install github.com/ncabatoff/process-exporter/cmd/process-exporter
+    when: bin_exists.stat.exists == False
+
+- hosts: all
+  tasks:
+  - file:
+      src: /omd/sites/mon/go/bin/process-exporter
+      dest: /omd/sites/mon/local/bin/process-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/vagrant/provision/playbooks/process-exporter/data/process-exporter.yml dest=/omd/sites/mon/etc/process-exporter.yml owner=mon group=mon mode=0644
+  - copy: src=/vagrant/provision/playbooks/process-exporter/data/init dest=/omd/sites/mon/etc/init.d/process-exporter owner=mon group=mon mode=0755
+  - file:
+      src: ../init.d/process-exporter
+      dest: /omd/sites/mon/etc/rc.d/90-process-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/vagrant/provision/playbooks/process-exporter/data/01-process-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-process-exporter.yml owner=mon group=mon mode=0644
+  - command: omd start mon process-exporter
+  - command: omd reload mon prometheus
+  - copy: src=/vagrant/provision/playbooks/process-exporter/data/process.json dest=/omd/sites/mon/var/grafana/dashboards/process.json owner=mon group=mon mode=0644

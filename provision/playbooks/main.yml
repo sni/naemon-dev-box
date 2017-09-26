@@ -1,0 +1,27 @@
+---
+- import_playbook: epel/epel.yml
+- import_playbook: labs/labs.yml
+- hosts: all
+  tasks:
+  - selinux: state=disabled
+  - yum: name=ntp state=installed
+  - service: name=ntpd state=started enabled=true
+  - timezone: name=Europe/Berlin
+  - yum: name=lsof state=installed
+  - yum: name=bash-completion,bash-completion-extras state=installed
+  - yum: name=telnet state=installed
+  - yum: name=git state=installed
+  - yum: name=vim state=installed
+  - yum: name=gdb state=installed
+  - yum: name=valgrind state=installed
+  - yum: name=wget state=installed
+  - shell: echo -e "*********\nYou can always reprovision by running\n%>sudo bash /vagrant/provision/ansible.sh\n*********\n" > /etc/motd
+  - shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
+- import_playbook: omd/omd.yml
+- import_playbook: apache/apache.yml
+- import_playbook: golang/golang.yml
+- import_playbook: process-exporter/process-exporter.yml
+- import_playbook: node-exporter/node-exporter.yml
+- import_playbook: naemon/naemon.yml
+# this should be the last one
+- import_playbook: git/git.yml

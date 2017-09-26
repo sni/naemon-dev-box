@@ -1,0 +1,54 @@
+# clone naemon-core and naemon-livestatus
+---
+- hosts: all
+  tasks:
+  - name: "naemon-core build requirements"
+    yum: name=autoconf,automake,pkgconfig,help2man,gperf,libtool,gcc,chrpath,glib2-devel state=installed
+  - name: "naemon-livestatus build requirements"
+    yum: name=gcc-c++,libicu-devel state=installed
+  - name: "replace naemon binary path in init script"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/naemon
+        state: present
+        regexp: '^BIN'
+        line: 'BIN=/vagrant/naemon-core/src/naemon/.libs/lt-naemon'
+  - name: "replace naemon-livestatus path in module config"
+    lineinfile:
+        dest: /omd/sites/dev/etc/naemon/naemon.d/livestatus.cfg
+        state: present
+        regexp: '^broker_module'
+        line: 'broker_module=/vagrant/naemon-livestatus/src/.libs/livestatus.so num_client_threads=20 pnp_path=/omd/sites/dev/var/pnp4nagios/perfdata /omd/sites/dev/tmp/run/live'
+
+- hosts: all
+  become: true
+  become_user: vagrant
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "git clone naemon-core"
+    command: git clone https://github.com/naemon/naemon-core.git
+    args:
+      chdir: /vagrant
+      creates: /vagrant/naemon-core/.git
+  - name: "make naemon-core"
+    shell: "./autogen.sh && make"
+    args:
+      chdir: /vagrant/naemon-core
+      creates: /vagrant/naemon-core/src/naemon/naemon
+
+
+  - name: "git clone naemon-livestatus"
+    command: git clone https://github.com/naemon/naemon-livestatus.git
+    args:
+      chdir: /vagrant
+      creates: /vagrant/naemon-livestatus/.git
+  - name: "prepare make naemon-livestatus"
+    shell: "autoreconf -s -i && automake --add-missing"
+    args:
+      chdir: /vagrant/naemon-livestatus
+      creates: /vagrant/naemon-livestatus/configure
+  - name: "make naemon-livestatus"
+    shell: "NAEMON_LIBS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --libs naemon-uninstalled) NAEMON_CFLAGS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --cflags naemon-uninstalled) ./configure && make"
+    args:
+      chdir: /vagrant/naemon-livestatus
+      creates: /vagrant/naemon-livestatus/src/.libs/livestatus.so

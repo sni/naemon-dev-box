@@ -1,0 +1,15 @@
+---
+- hosts: all
+  tasks:
+  - name: "import labs.consol.de gpg key"
+    rpm_key:
+      state: present
+      key: https://labs.consol.de/repo/stable/RPM-GPG-KEY
+  - name: "install consol stable repository"
+    yum:
+      name: https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
+      state: present
+  - name: "install consol testing repository"
+    yum:
+      name: https://labs.consol.de/repo/testing/rhel7/i386/labs-consol-testing.rhel7.noarch.rpm
+      state: present

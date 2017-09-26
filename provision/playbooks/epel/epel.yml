@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+  - name: "import epel gpg key"
+    rpm_key:
+      state: present
+      key: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+  - name: install epel repository
+    yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      state: present

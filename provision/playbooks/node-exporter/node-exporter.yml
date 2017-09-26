@@ -1,0 +1,26 @@
+---
+- hosts: all
+  tasks:
+  - stat: path=/omd/sites/mon/local/bin/node_exporter
+    register: bin_exists
+  - shell: sudo -i -u mon go get github.com/prometheus/node_exporter
+    when: bin_exists.stat.exists == False
+  - shell: sudo -i -u mon go install github.com/prometheus/node_exporter
+    when: bin_exists.stat.exists == False
+  - file:
+      src: /omd/sites/mon/go/bin/node_exporter
+      dest: /omd/sites/mon/local/bin/node_exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/vagrant/provision/playbooks/node-exporter/data/init dest=/omd/sites/mon/etc/init.d/node-exporter owner=mon group=mon mode=0755
+  - file:
+      src: ../init.d/node-exporter
+      dest: /omd/sites/mon/etc/rc.d/90-node-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/vagrant/provision/playbooks/node-exporter/data/01-node-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-node-exporter.yml owner=mon group=mon mode=0644
+  - command: omd start mon node-exporter
+  - command: omd reload mon prometheus
+  - copy: src=/vagrant/provision/playbooks/node-exporter/data/node.json dest=/omd/sites/mon/var/grafana/dashboards/node.json owner=mon group=mon mode=0644
