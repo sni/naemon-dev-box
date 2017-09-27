@@ -8,10 +8,15 @@
   tasks:
   - stat: path=/omd/sites/mon/.git
     register: git_exists
-  - command: git init chdir=/omd/sites/mon
+  - name: "git init for mon user"
+    command: git init chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
   - command: git add . chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
   - command: git commit -m 'initial site created' chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
-  - copy: src=/vagrant/provision/playbooks/git/gitconfig dest=/etc/gitconfig owner=root group=root mode=0644
+
+- hosts: all
+  tasks:
+  - name: "create /etc/gitconfig"
+    copy: src=/vagrant/provision/playbooks/git/gitconfig dest=/etc/gitconfig owner=root group=root mode=0644

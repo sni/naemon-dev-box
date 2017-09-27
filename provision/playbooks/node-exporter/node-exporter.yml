@@ -1,12 +1,19 @@
 ---
 - hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
   tasks:
   - stat: path=/omd/sites/mon/local/bin/node_exporter
     register: bin_exists
-  - shell: sudo -i -u mon go get github.com/prometheus/node_exporter
+  - shell: go get github.com/prometheus/node_exporter
     when: bin_exists.stat.exists == False
-  - shell: sudo -i -u mon go install github.com/prometheus/node_exporter
+  - shell: go install github.com/prometheus/node_exporter
     when: bin_exists.stat.exists == False
+
+- hosts: all
+  tasks:
   - file:
       src: /omd/sites/mon/go/bin/node_exporter
       dest: /omd/sites/mon/local/bin/node_exporter
