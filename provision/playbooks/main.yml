@@ -1,6 +1,6 @@
 ---
-- import_playbook: epel/epel.yml
-- import_playbook: labs/labs.yml
+- include: epel/epel.yml
+- include: labs/labs.yml
 - hosts: all
   tasks:
   - selinux: state=disabled
@@ -17,11 +17,11 @@
   - yum: name=wget state=installed
   - shell: echo -e "*********\nYou can always reprovision by running\n%>sudo bash /vagrant/provision/ansible.sh\n*********\n" > /etc/motd
   - shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
-- import_playbook: omd/omd.yml
-- import_playbook: apache/apache.yml
-- import_playbook: golang/golang.yml
-- import_playbook: process-exporter/process-exporter.yml
-- import_playbook: node-exporter/node-exporter.yml
-- import_playbook: naemon/naemon.yml
+- include: omd/omd.yml
+- include: apache/apache.yml
+- include: golang/golang.yml
+- include: process-exporter/process-exporter.yml
+- include: node-exporter/node-exporter.yml
+- include: naemon/naemon.yml
 # this should be the last one
-- import_playbook: git/git.yml
+- include: git/git.yml
