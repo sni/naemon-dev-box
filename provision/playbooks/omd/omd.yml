@@ -37,6 +37,8 @@
         state: present
         line: 'queue_custom_variable=WORKER'
   - copy: src=/vagrant/provision/playbooks/omd/data/dev/test.cfg dest=/omd/sites/dev/etc/naemon/conf.d/test.cfg owner=dev group=dev mode=0644
+  - copy: src=/vagrant/provision/playbooks/omd/data/dev/test.cron dest=/omd/sites/dev/etc/cron.d/test owner=dev group=dev mode=0644
+  - copy: src=/vagrant/provision/playbooks/omd/data/dev/submit_check_result.sh dest=/omd/sites/dev/local/bin/submit_check_result.sh owner=dev group=dev mode=0755
 
 # install Monitoring::Generator::TestConfig into dev site
 - hosts: all

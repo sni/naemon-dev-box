@@ -1,0 +1,3 @@
+* * * * * $OMD_ROOT/local/bin/submit_check_result.sh 0
+* * * * * sleep 20; $OMD_ROOT/local/bin/submit_check_result.sh 0
+* * * * * sleep 30; $OMD_ROOT/local/bin/submit_check_result.sh 2
