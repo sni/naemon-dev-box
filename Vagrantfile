@@ -22,6 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           "en6: Broadcom NetXtreme Gigabit Ethernet Controller",
       ]
       srv.vm.network "private_network", ip: "192.168.99.99"
-      config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+      # requires "vagrant plugin install vagrant-sshfs" but works with most clients and does not require an agent to be installed
+      config.vm.synced_folder ".", "/vagrant", type: "sshfs"
   end
 end
