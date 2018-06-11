@@ -3,3 +3,4 @@
 naemon-core/
 naemon-livestatus/
 omd/
+mod_gearman/
