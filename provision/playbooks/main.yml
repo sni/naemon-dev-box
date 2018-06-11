@@ -19,9 +19,10 @@
   - shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
 - include: omd/omd.yml
 - include: apache/apache.yml
+- include: naemon/naemon.yml
 - include: golang/golang.yml
 - include: process-exporter/process-exporter.yml
 - include: node-exporter/node-exporter.yml
-- include: naemon/naemon.yml
+- include: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 # this should be the last one
 - include: git/git.yml

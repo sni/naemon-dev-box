@@ -1,0 +1,19 @@
+process_names:
+  - comm:
+    - gearmand
+    - mod_gearman_wor
+  - name: "naemon"
+    exe:
+    - lt-naemon
+    - naemon
+    cmdline:
+    - -ud
+  - name: "naemon worker"
+    exe:
+    - lt-naemon
+    - naemon
+    cmdline:
+    - --worker
+  - name: "naemon plugins"
+    cmdline:
+    - /lib/nagios/plugins/
