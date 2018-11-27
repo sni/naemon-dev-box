@@ -2,7 +2,6 @@
 *.retry
 naemon-core/
 naemon-livestatus/
-omd/
 mod_gearman/
 Thruk/
 omd_utils/
