@@ -24,5 +24,6 @@
 - include: process-exporter/process-exporter.yml
 - include: node-exporter/node-exporter.yml
 - include: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
+- include: thruk/thruk.yml
 # this should be the last one
 - include: git/git.yml
