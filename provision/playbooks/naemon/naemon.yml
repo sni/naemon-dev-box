@@ -3,7 +3,7 @@
 - hosts: all
   tasks:
   - name: "naemon-core build requirements"
-    yum: name=autoconf,automake,pkgconfig,help2man,gperf,libtool,gcc,chrpath,glib2-devel state=installed
+    yum: name=autoconf,automake,pkgconfig,help2man,gperf,libtool,gcc,chrpath,glib2-devel,check,check-devel state=installed
   - name: "naemon-livestatus build requirements"
     yum: name=gcc-c++,libicu-devel state=installed
   - name: "replace naemon binary path in init script"
