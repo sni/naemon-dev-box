@@ -5,3 +5,4 @@ naemon-livestatus/
 mod_gearman/
 Thruk/
 omd_utils/
+mod-gearman-worker-go/

@@ -26,5 +26,6 @@
 - include: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 - include: thruk/thruk.yml
 - include: mod-gearman/mod-gearman.yml
+- include: mod-gearman-worker-go/mod-gearman-worker-go.yml
 # this should be the last one
 - include: git/git.yml

@@ -1,0 +1,35 @@
+# clone naemon-core and naemon-livestatus
+---
+- hosts: all
+  tasks:
+  - name: "replace mod-gearman-worker-go binary path in init script"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/init.d/gearman_worker
+        state: present
+        regexp: '^DAEMON'
+        line: 'DAEMON=/vagrant/mod-gearman-worker-go/mod_gearman_worker'
+
+- hosts: all
+  become: true
+  become_user: vagrant
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "git clone mod-gearman-worker-go"
+    command: git clone https://github.com/ConSol/mod-gearman-worker-go.git
+    args:
+      chdir: /vagrant
+      creates: /vagrant/mod-gearman-worker-go/.git
+  - file:
+      path: ~/go/src/github.com/ConSol
+      state: directory
+      mode: 0755
+  - file:
+      src: /vagrant/mod-gearman-worker-go
+      dest: ~/go/src/github.com/ConSol/mod-gearman-worker-go
+      state: link
+  - name: "make mod-gearman-worker-go"
+    shell: "make"
+    args:
+      chdir: /vagrant/mod-gearman-worker-go
+      creates: /vagrant/mod-gearman-worker-go/mod-gearman-worker-go

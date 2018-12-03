@@ -1,13 +1,10 @@
 ---
 - hosts: all
-  vars:
-    golang_version: "go1.9.linux-amd64"
   tasks:
-  - stat: path=/usr/local/go/bin/go
-    register: go_exists
-  - get_url: url=https://storage.googleapis.com/golang/{{ golang_version }}.tar.gz dest=/tmp/{{ golang_version }}.tar.gz
-    when: go_exists.stat.exists == False
-  - unarchive: src=/tmp/{{ golang_version }}.tar.gz dest=/usr/local/
-    when: go_exists.stat.exists == False
-  - shell: echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile.d/gopath.sh
-    when: go_exists.stat.exists == False
+  - name: "enable epel testing"
+    replace:
+      path: /etc/yum.repos.d/epel-testing.repo
+      regexp: ^enabled=0
+      replace: 'enabled=1'
+  - name: "install golang"
+    yum: name=golang state=installed
