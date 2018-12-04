@@ -27,5 +27,16 @@
 - include: thruk/thruk.yml
 - include: mod-gearman/mod-gearman.yml
 - include: mod-gearman-worker-go/mod-gearman-worker-go.yml
-# this should be the last one
+# this should be the last regular playbook
 - include: git/git.yml
+
+- hosts: all
+  become: true
+  become_user: vagrant
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "update repositories"
+    shell: "make update build"
+    args:
+      chdir: /vagrant/
