@@ -30,5 +30,5 @@
   - name: "make mod_gearman"
     shell: "PKG_CONFIG_PATH=/vagrant/naemon-core/. ./configure --with-gearman=/omd/versions/default; make"
     args:
-      chdir: /vagrant/naemon-livestatus
+      chdir: /vagrant/mod_gearman
       creates: /vagrant/mod_gearman/mod_gearman_naemon.o
