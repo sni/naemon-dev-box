@@ -58,3 +58,22 @@
     args:
       chdir: /omd/sites/dev
       creates: /opt/omd/sites/dev/recreate.pl
+
+# add ssh control master config
+  - name: Add .ssh folder
+    file:
+      path=/omd/sites/dev/.ssh
+      state=directory
+      mode=0700
+      owner=dev
+      group=dev
+  - name: "create ssh config"
+    shell: "ssh-keygen -q -t rsa -f .ssh/id_rsa -C \"\" -N \"\""
+    args:
+      creates: path=/omd/sites/dev/.ssh/id_rsa
+  - name: Set authorized key taken from file
+    authorized_key:
+      user: dev
+      state: present
+      key: "{{ lookup('file', '/omd/sites/dev/.ssh/id_rsa.pub') }}"
+  - copy: src=/vagrant/provision/playbooks/omd/data/dev/ssh.cfg dest=/omd/sites/dev/etc/naemon/conf.d/ssh.cfg owner=dev group=dev mode=0644
