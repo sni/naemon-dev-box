@@ -33,3 +33,9 @@
     args:
       chdir: /vagrant/mod-gearman-worker-go
       creates: /vagrant/mod-gearman-worker-go/mod-gearman-worker-go
+  - name: "enable mod-gearman-worker-go prometheus listener"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/mod-gearman/worker.cfg
+        state: present
+        regexp: 'prometheus_server='
+        line: 'prometheus_server=127.0.0.1:9050'

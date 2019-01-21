@@ -19,6 +19,7 @@
         state: present
         line: 'mon ALL=(ALL) NOPASSWD: ALL'
         validate: visudo -cf %s
+  - copy: src=/vagrant/provision/playbooks/omd/data/mon/03-gearman_worker.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/03-gearman_worker.yml owner=mon group=mon mode=0644
 
   # dev site
   - command: omd create dev creates=/omd/sites/dev
