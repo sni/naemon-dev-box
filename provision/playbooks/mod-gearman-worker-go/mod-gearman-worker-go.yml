@@ -9,6 +9,7 @@
         regexp: '^DAEMON'
         line: 'DAEMON=/vagrant/mod-gearman-worker-go/mod_gearman_worker'
 
+# do some tasks as vagrant user
 - hosts: all
   become: true
   become_user: vagrant
@@ -33,6 +34,10 @@
     args:
       chdir: /vagrant/mod-gearman-worker-go
       creates: /vagrant/mod-gearman-worker-go/mod-gearman-worker-go
+
+# continue as root
+- hosts: all
+  tasks:
   - name: "enable mod-gearman-worker-go prometheus listener"
     lineinfile:
         dest: /opt/omd/sites/dev/etc/mod-gearman/worker.cfg
