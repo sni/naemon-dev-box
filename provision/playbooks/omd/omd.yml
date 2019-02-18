@@ -70,7 +70,7 @@
   - name: "create ssh config"
     shell: "ssh-keygen -q -t rsa -f .ssh/id_rsa -C \"\" -N \"\""
     args:
-      creates: path=/omd/sites/dev/.ssh/id_rsa
+      creates: /omd/sites/dev/.ssh/id_rsa
   - name: Set authorized key taken from file
     authorized_key:
       user: dev
