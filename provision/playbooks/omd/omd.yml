@@ -21,6 +21,17 @@
         validate: visudo -cf %s
   - copy: src=/vagrant/provision/playbooks/omd/data/mon/03-gearman_worker.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/03-gearman_worker.yml owner=mon group=mon mode=0644
 
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "change omdadmin password"
+    shell: "set_admin_password omd"
+
+- hosts: all
+  tasks:
   # dev site
   - command: omd create dev creates=/omd/sites/dev
   - command: omd stop dev
@@ -77,3 +88,5 @@
       state: present
       key: "{{ lookup('file', '/omd/sites/dev/.ssh/id_rsa.pub') }}"
   - copy: src=/vagrant/provision/playbooks/omd/data/dev/ssh.cfg dest=/omd/sites/dev/etc/naemon/conf.d/ssh.cfg owner=dev group=dev mode=0644
+  - name: "change omdadmin password"
+    shell: "set_admin_password omd"
