@@ -1,7 +1,0 @@
----
-- hosts: all
-  tasks:
-  - copy: src=/vagrant/provision/playbooks/apache/redirect.conf dest=/etc/httpd/conf.d/redirect.conf owner=root group=root mode=0640
-    register: redirect_file
-  - systemd: name=httpd state=reloaded enabled=yes masked=no
-    when: redirect_file.changed

@@ -1,0 +1,25 @@
+[alias]
+  d      = diff --color=always
+  dw     = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+  dt     = difftool
+  s      = status
+  co     = checkout
+  br     = branch
+  gr     = log --graph --full-history --all --pretty=format:%h%x09%d%x20%s
+[core]
+  editor = vim
+[color]
+  diff   = auto
+  status = auto
+  branch = auto
+[push]
+  default = upstream
+[diff]
+  tool = vimdiff
+[difftool]
+  prompt = false
+[merge]
+  tool = vimdiff
+[user]
+  name = Mon User
+  email = mon@localhost

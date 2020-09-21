@@ -1,0 +1,22 @@
+# initialize git repository in mon site
+---
+- hosts: all
+  tasks:
+  - name: "create /etc/gitconfig"
+    copy: src=/box/devbox/provision/git/gitconfig dest=/etc/gitconfig owner=root group=root mode=0644
+
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - stat: path=/omd/sites/mon/.git
+    register: git_exists
+  - name: "git init for mon user"
+    command: git init chdir=/omd/sites/mon
+    when: git_exists.stat.exists == False
+  - command: git add . chdir=/omd/sites/mon
+    when: git_exists.stat.exists == False
+  - command: git commit -m 'initial site created' chdir=/omd/sites/mon
+    when: git_exists.stat.exists == False

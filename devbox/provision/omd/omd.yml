@@ -1,0 +1,94 @@
+---
+- hosts: all
+  tasks:
+  - yum: name=omd-labs-edition-daily state=installed
+  - yum: name=make state=installed
+  - yum: name=perl-ExtUtils-Manifest state=installed
+  - yum: name=perl-ExtUtils-Install state=installed
+  # mon site
+  - command: omd create mon creates=/omd/sites/mon
+  - command: omd stop mon
+  - command: omd config mon set CORE none
+  - command: omd config mon set GRAFANA on
+  - command: omd config mon set PROMETHEUS on
+  - command: omd config mon set THRUK_COOKIE_AUTH off
+  - command: omd config mon set DEFAULT_GUI grafana
+  - command: omd config mon set PNP4NAGIOS off
+  - command: omd start mon
+  # add sudo permissions for mon user
+  - lineinfile:
+        dest: /etc/sudoers
+        state: present
+        line: 'mon ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+  - copy: src=/box/devbox/provision/omd/data/mon/03-gearman_worker.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/03-gearman_worker.yml owner=mon group=mon mode=0644
+
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "change omdadmin password"
+    shell: "set_admin_password omd"
+
+- hosts: all
+  tasks:
+  # dev site
+  - command: omd create dev creates=/omd/sites/dev
+  - command: omd stop dev
+  - command: omd config dev set PNP4NAGIOS off
+  - command: omd config dev set MOD_GEARMAN on
+  - command: omd config dev set AUTOSTART off
+  - file:
+      src: ../../../share/doc/naemon/example.cfg
+      dest: /omd/sites/dev/etc/naemon/conf.d/example.cfg
+      owner: dev
+      group: dev
+      state: link
+  - lineinfile:
+        dest: /omd/sites/dev/etc/mod-gearman/server.cfg
+        state: present
+        line: 'queue_custom_variable=WORKER'
+  - copy: src=/box/devbox/provision/omd/data/dev/test.cfg dest=/omd/sites/dev/etc/naemon/conf.d/test.cfg owner=dev group=dev mode=0644
+  - copy: src=/box/devbox/provision/omd/data/dev/test.cron dest=/omd/sites/dev/etc/cron.d/test owner=dev group=dev mode=0644
+  - copy: src=/box/devbox/provision/omd/data/dev/submit_check_result.sh dest=/omd/sites/dev/local/bin/submit_check_result.sh owner=dev group=dev mode=0755
+
+# install Monitoring::Generator::TestConfig into dev site
+- hosts: all
+  become: true
+  become_user: dev
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "install Monitoring::Generator::TestConfig perl module"
+    shell: "cpanm -n Monitoring::Generator::TestConfig"
+    args:
+      chdir: /omd/sites/dev
+      creates: /omd/sites/dev/local/lib/perl5/lib/perl5/Monitoring/Generator/TestConfig.pm
+  - name: "create test config"
+    shell: "./local/lib/perl5/bin/create_monitoring_test_config.pl"
+    args:
+      chdir: /omd/sites/dev
+      creates: /opt/omd/sites/dev/recreate.pl
+
+# add ssh control master config
+  - name: Add .ssh folder
+    file:
+      path=/omd/sites/dev/.ssh
+      state=directory
+      mode=0700
+      owner=dev
+      group=dev
+  - name: "create ssh config"
+    shell: "ssh-keygen -q -t rsa -f .ssh/id_rsa -C \"\" -N \"\""
+    args:
+      creates: /omd/sites/dev/.ssh/id_rsa
+  - name: Set authorized key taken from file
+    authorized_key:
+      user: dev
+      state: present
+      key: "{{ lookup('file', '/omd/sites/dev/.ssh/id_rsa.pub') }}"
+  - copy: src=/box/devbox/provision/omd/data/dev/ssh.cfg dest=/omd/sites/dev/etc/naemon/conf.d/ssh.cfg owner=dev group=dev mode=0644
+  - name: "change omdadmin password"
+    shell: "set_admin_password omd"

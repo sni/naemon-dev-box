@@ -1,0 +1,27 @@
+# clone thruk
+---
+- hosts: all
+  tasks:
+  - name: "git clone thruk"
+    command: git clone git://github.com/sni/Thruk.git
+    args:
+      chdir: /src
+      creates: /src/Thruk/.git
+  - name: "git clone omd_utils"
+    command: git clone git://github.com/sni/omd_utils.git
+    args:
+      chdir: /src
+      creates: /src/omd_utils/.git
+
+- hosts: all
+  become: true
+  become_user: dev
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "install File::ChangeNotify"
+    shell: "cpanm -n File::ChangeNotify"
+    args:
+      creates: /omd/sites/dev/local/lib/perl5/lib/perl5/File/ChangeNotify.pm
+  - name: "activate local thruk"
+    shell: "yes | /src/omd_utils/thruk_developer/install.sh /src/Thruk"

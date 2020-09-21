@@ -1,0 +1,35 @@
+# clone mod-gearman
+---
+- hosts: all
+  tasks:
+  - name: "mod-gearman build requirements"
+    yum: name=libtool,libtool-ltdl-devel,libevent-devel,ncurses-devel,autoconf,automake state=installed
+  - name: "replace mod-gearman module in naemon config"
+    lineinfile:
+        dest: /omd/sites/dev/etc/naemon/naemon.d/mod-gearman.cfg
+        state: present
+        regexp: '^broker_module='
+        line: 'broker_module=/src/mod_gearman/mod_gearman_naemon.o config=/omd/sites/dev/etc/mod-gearman/server.cfg'
+
+- hosts: all
+  tasks:
+  - name: "git clone mod-gearman"
+    command: git clone https://github.com/sni/mod_gearman.git
+    args:
+      chdir: /src
+      creates: /src/mod_gearman/.git
+  - name: "mod_gearman autogen"
+    environment:
+      CFLAGS: '-g3'
+    shell: "./autogen.sh"
+    args:
+      chdir: /src/mod_gearman
+      creates: /src/mod_gearman/configure
+  - name: "make mod_gearman"
+    environment:
+      CFLAGS: '-g3'
+      PKG_CONFIG_PATH: '/src/naemon-core/.'
+    shell: "./configure --with-gearman=/omd/versions/default --enable-debug; make"
+    args:
+      chdir: /src/mod_gearman
+      creates: /src/mod_gearman/mod_gearman_naemon.o

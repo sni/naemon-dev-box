@@ -1,0 +1,45 @@
+#!/bin/sh
+
+cd $OMD_ROOT
+. $OMD_ROOT/.profile
+. $OMD_ROOT/etc/omd/site.conf
+
+NAME="prometheus-nagios-exporter"
+DAEMON="$OMD_ROOT/local/share/prometheus-nagios-exporter/nagios_exporter.py"
+OPTIONS="--path /omd/sites/dev/tmp/run/live"
+
+case "$1" in
+    start)
+        echo -n "Starting $NAME..."
+        sudo nohup python3 $DAEMON $OPTIONS >var/log/${NAME}.log 2>&1 &
+        if [ $? -eq 0 ]; then
+            echo "OK"
+        else
+            echo "failed"
+        fi
+        ;;
+    status)
+        if [ $(ps -fu root | grep -v grep | grep -c $DAEMON) -gt 0 ]; then
+            echo "$NAME running"
+            exit 0
+        else
+            echo "$NAME stopped"
+            exit 1
+        fi
+        ;;
+    stop)
+        echo -n "Stopping $NAME..."
+        sudo pkill -u root -f $DAEMON
+        echo "done"
+        ;;
+    restart|reload|force-reload)
+        $0 stop && sleep 1 && $0 start
+        exit $?
+        ;;
+    *)
+        echo "Usage: $NAME {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "install node_exporter"
+    shell: "go get github.com/prometheus/node_exporter; go get github.com/prometheus/node_exporter; go install github.com/prometheus/node_exporter"
+    args:
+      chdir: /omd/sites/mon
+      creates: /omd/sites/mon/go/bin/node_exporter
+
+- hosts: all
+  tasks:
+  - file:
+      src: /omd/sites/mon/go/bin/node_exporter
+      dest: /omd/sites/mon/local/bin/node_exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/box/devbox/provision/node-exporter/data/init dest=/omd/sites/mon/etc/init.d/node-exporter owner=mon group=mon mode=0755
+  - file:
+      src: ../init.d/node-exporter
+      dest: /omd/sites/mon/etc/rc.d/90-node-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/box/devbox/provision/node-exporter/data/01-node-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-node-exporter.yml owner=mon group=mon mode=0644
+  - command: omd start mon node-exporter
+  - command: omd reload mon prometheus
+  - copy: src=/box/devbox/provision/node-exporter/data/node.json dest=/omd/sites/mon/var/grafana/dashboards/node.json owner=mon group=mon mode=0644

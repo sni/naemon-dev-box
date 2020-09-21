@@ -1,0 +1,38 @@
+# clone mod-gearman
+---
+- hosts: all
+  tasks:
+  - name: "replace mod-gearman-worker-go binary path in init script"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/init.d/gearman_worker
+        state: present
+        regexp: '^DAEMON'
+        line: 'DAEMON=/src/mod-gearman-worker-go/mod_gearman_worker'
+  - name: "git clone mod-gearman-worker-go"
+    command: git clone https://github.com/ConSol/mod-gearman-worker-go.git
+    args:
+      chdir: /src
+      creates: /src/mod-gearman-worker-go/.git
+  - file:
+      path: ~/go/src/github.com/ConSol
+      state: directory
+      mode: 0755
+  - file:
+      src: /src/mod-gearman-worker-go
+      dest: ~/go/src/github.com/ConSol/mod-gearman-worker-go
+      state: link
+  - name: "make mod-gearman-worker-go"
+    shell: "make"
+    args:
+      chdir: /src/mod-gearman-worker-go
+      creates: /src/mod-gearman-worker-go/mod-gearman-worker-go
+
+# continue as root
+- hosts: all
+  tasks:
+  - name: "enable mod-gearman-worker-go prometheus listener"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/mod-gearman/worker.cfg
+        state: present
+        regexp: 'prometheus_server='
+        line: 'prometheus_server=127.0.0.1:9050'

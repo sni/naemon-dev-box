@@ -1,5 +1,7 @@
 # Naemon Dev Box
 
+Based on docker and docker-compose.
+
 ## Content
 
   - OMD Labs Edition
@@ -8,13 +10,13 @@
 
 ## Usage
 
-You will need `vagrant` and `virtualbox`.
+You will need `docker` and `docker-compose`.
 
-    %> git clone git@github.com:sni/naemon-dev-vagrant-box.git
-    %> cd naemon-dev-vagrant-box
-    %> vagrant plugin install vagrant-vbguest
-    %> vagrant up
-    %> vagrant ssh
+    %> git clone git@github.com:sni/naemon-dev-box.git
+    %> cd naemon-dev-box
+    %> make clean
+    %> make prepare
+    %> make shell
 
 ### OMD
 
@@ -29,15 +31,15 @@ example checks.
 
 ### Development
 
-Naemon-core and Naemon-Livestatus will be cloned to /vagrant and the dev
+Naemon-core and Naemon-Livestatus will be cloned to /src and the dev
 OMD site will be prepared to use those files.
 
 #### Build
-Naemon and Naemon-Livestatus need to be build inside the vagrant box:
+Naemon and Naemon-Livestatus need to be build inside the docker container:
 
 
-    [root@naemon-dev ~]# cd /vagrant/naemon-core && ./autogen.sh && ./configure && make
-    [root@naemon-dev ~]# cd /vagrant/naemon-livestatus && autoreconf -i && PKG_CONFIG_PATH=../naemon-core ./configure && make
+    [root@naemon-dev ~]# cd /src/naemon-core && ./autogen.sh && ./configure && make
+    [root@naemon-dev ~]# cd /src/naemon-livestatus && autoreconf -i && PKG_CONFIG_PATH=../naemon-core ./configure && make
 
 ## Provisioning
 
@@ -45,4 +47,4 @@ The initial provisioning is done by a shell command which installs omd and the
 repositories. Everything else is provisioned by ansible. You can rerun the
 provisioning anytime by running this as root:
 
-    #> bash /vagrant/provision/ansible.sh
+    #> bash /box/devbox/provision/ansible.sh

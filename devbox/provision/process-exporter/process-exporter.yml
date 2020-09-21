@@ -1,0 +1,33 @@
+---
+- hosts: all
+  become: true
+  become_user: mon
+  become_method: su
+  become_flags: '-l'
+  tasks:
+  - name: "install node_exporter"
+    shell: "go get github.com/ncabatoff/process-exporter; go install github.com/ncabatoff/process-exporter/cmd/process-exporter"
+    args:
+      chdir: /omd/sites/mon
+      creates: /omd/sites/mon/go/bin/process-exporter
+
+- hosts: all
+  tasks:
+  - file:
+      src: /omd/sites/mon/go/bin/process-exporter
+      dest: /omd/sites/mon/local/bin/process-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/box/devbox/provision/process-exporter/data/process-exporter.yml dest=/omd/sites/mon/etc/process-exporter.yml owner=mon group=mon mode=0644
+  - copy: src=/box/devbox/provision/process-exporter/data/init dest=/omd/sites/mon/etc/init.d/process-exporter owner=mon group=mon mode=0755
+  - file:
+      src: ../init.d/process-exporter
+      dest: /omd/sites/mon/etc/rc.d/90-process-exporter
+      owner: mon
+      group: mon
+      state: link
+  - copy: src=/box/devbox/provision/process-exporter/data/01-process-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-process-exporter.yml owner=mon group=mon mode=0644
+  - command: omd start mon process-exporter
+  - command: omd reload mon prometheus
+  - copy: src=/box/devbox/provision/process-exporter/data/process.json dest=/omd/sites/mon/var/grafana/dashboards/process.json owner=mon group=mon mode=0644

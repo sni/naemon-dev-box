@@ -1,0 +1,53 @@
+# clone naemon-core and naemon-livestatus
+---
+- hosts: all
+  tasks:
+  - name: "naemon-core build requirements"
+    yum: name=autoconf,automake,pkgconfig,help2man,gperf,libtool,gcc,chrpath,glib2-devel,check,check-devel,perl-Test-Simple state=installed
+  - name: "naemon-livestatus build requirements"
+    yum: name=gcc-c++,libicu-devel,cppunit-devel state=installed
+  - name: "replace naemon binary path in init script"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/naemon
+        state: present
+        regexp: '^BIN'
+        line: 'BIN=/src/naemon-core/src/naemon/.libs/lt-naemon'
+  - name: "replace naemon-livestatus path in module config"
+    lineinfile:
+        dest: /omd/sites/dev/etc/naemon/naemon.d/livestatus.cfg
+        state: present
+        regexp: '^broker_module'
+        line: 'broker_module=/src/naemon-livestatus/src/.libs/livestatus.so num_client_threads=20 pnp_path=/omd/sites/dev/var/pnp4nagios/perfdata /omd/sites/dev/tmp/run/live'
+
+  - name: "git clone naemon-core"
+    command: git clone https://github.com/naemon/naemon-core.git
+    args:
+      chdir: /src
+      creates: /src/naemon-core/.git
+  - name: "make naemon-core"
+    environment:
+      CFLAGS: '-g3'
+    shell: "./autogen.sh && make"
+    args:
+      chdir: /src/naemon-core
+      creates: /src/naemon-core/src/naemon/naemon
+
+  - name: "git clone naemon-livestatus"
+    command: git clone https://github.com/naemon/naemon-livestatus.git
+    args:
+      chdir: /src
+      creates: /src/naemon-livestatus/.git
+  - name: "prepare make naemon-livestatus"
+    environment:
+      CFLAGS: '-g3'
+    shell: "autoreconf -s -i && automake --add-missing"
+    args:
+      chdir: /src/naemon-livestatus
+      creates: /src/naemon-livestatus/configure
+  - name: "make naemon-livestatus"
+    environment:
+      CFLAGS: '-g3'
+    shell: "NAEMON_LIBS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --libs naemon-uninstalled) NAEMON_CFLAGS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --cflags naemon-uninstalled) ./configure && make"
+    args:
+      chdir: /src/naemon-livestatus
+      creates: /src/naemon-livestatus/src/.libs/livestatus.so

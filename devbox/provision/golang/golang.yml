@@ -1,0 +1,31 @@
+---
+- hosts: all
+  vars:
+    golang: 1.15.2
+    srcrpm: golang-1.15.2-1.fc34.src.rpm
+    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/{{ golang }}/1.fc34/src/{{ srcrpm }}
+  tasks:
+  - name: "install golang build deps"
+    yum:
+        name:
+            - glibc-static
+            - rpm-build
+            - golang
+        state: installed
+  - name: "fetch golang source rpm"
+    get_url:
+        url: "{{ srcurl }}"
+        dest: "/var/tmp/{{ srcrpm }}"
+  - name: "rebuild golang rpm"
+    command: rpmbuild --rebuild --nocheck {{ srcrpm }}
+    args:
+      chdir: /var/tmp
+      creates: /root/rpmbuild/RPMS/x86_64/golang-{{ golang }}-1.el8.x86_64.rpm
+  - name: "install local golang rpms"
+    yum:
+        name:
+            - /root/rpmbuild/RPMS/x86_64/golang-{{ golang }}-1.el8.x86_64.rpm
+            - /root/rpmbuild/RPMS/x86_64/golang-bin-{{ golang }}-1.el8.x86_64.rpm
+            - /root/rpmbuild/RPMS/noarch/golang-src-{{ golang }}-1.el8.noarch.rpm
+        state: installed
+        disable_gpg_check: yes
