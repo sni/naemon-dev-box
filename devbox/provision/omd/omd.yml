@@ -14,6 +14,7 @@
   - command: omd config mon set THRUK_COOKIE_AUTH off
   - command: omd config mon set DEFAULT_GUI grafana
   - command: omd config mon set PNP4NAGIOS off
+  - command: omd config mon set TMPFS off
   - command: omd start mon
   # add sudo permissions for mon user
   - lineinfile:
@@ -40,6 +41,7 @@
   - command: omd config dev set PNP4NAGIOS off
   - command: omd config dev set MOD_GEARMAN on
   - command: omd config dev set AUTOSTART off
+  - command: omd config dev set TMPFS off
   - file:
       src: ../../../share/doc/naemon/example.cfg
       dest: /omd/sites/dev/etc/naemon/conf.d/example.cfg
