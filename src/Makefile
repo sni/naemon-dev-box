@@ -59,7 +59,7 @@ update:
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
 			git pull >/dev/null 2>&1; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
-			echo "updated"; \
+			printf "%-10s %s\n" "updated" "$$(git rev-parse --abbrev-ref HEAD)"; \
 		else \
 			echo "dirty"; \
 		fi; \
