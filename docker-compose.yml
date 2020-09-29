@@ -13,9 +13,9 @@ services:
       - ./:/box:ro
       - ./src:/src:rw
       - /etc/localtime:/etc/localtime:ro
-    # required for strace
-    #cap_add:
-    #    - SYS_PTRACE
+    # required for strace / gdb
+    cap_add:
+        - SYS_PTRACE
     networks:
       default:
         ipv4_address: 192.168.99.99
