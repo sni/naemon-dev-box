@@ -12,6 +12,11 @@
     args:
       chdir: /src
       creates: /src/omd_utils/.git
+  - name: "perl Makefile.PL"
+    shell: "perl Makefile.PL"
+    args:
+      chdir: /src/Thruk
+      creates: /src/Thruk/Makefile
 
 - hosts: all
   become: true
