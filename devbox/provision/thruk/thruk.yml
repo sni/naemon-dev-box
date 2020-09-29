@@ -16,6 +16,8 @@
       creates: /src/omd_utils/.git
   - name: "perl Makefile.PL"
     shell: "perl Makefile.PL"
+    environment:
+      PERL5LIB: '/omd/versions/default/lib/perl5/lib/perl5'
     args:
       chdir: /src/Thruk
       creates: /src/Thruk/Makefile
