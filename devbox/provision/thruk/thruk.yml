@@ -2,6 +2,8 @@
 ---
 - hosts: all
   tasks:
+  - name: "thruk build requirements"
+    yum: name=make,perl-Module-Install state=installed
   - name: "git clone thruk"
     command: git clone git://github.com/sni/Thruk.git
     args:
