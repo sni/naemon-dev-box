@@ -1,0 +1,28 @@
+# clone nagflux
+---
+- hosts: all
+  tasks:
+  - name: "replace nagflux binary path in init script"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/init.d/nagflux
+        state: present
+        regexp: '^DAEMON'
+        line: 'DAEMON=/src/nagflux/nagflux'
+  - name: "git clone nagflux"
+    command: git clone https://github.com/ConSol/nagflux.git
+    args:
+      chdir: /src
+      creates: /src/nagflux/.git
+  - file:
+      path: ~/go/src/github.com/ConSol
+      state: directory
+      mode: 0755
+  - file:
+      src: /src/nagflux
+      dest: ~/go/src/github.com/ConSol/nagflux
+      state: link
+  - name: "make nagflux"
+    shell: "make"
+    args:
+      chdir: /src/nagflux
+      creates: /src/nagflux/nagflux

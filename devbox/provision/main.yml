@@ -28,6 +28,7 @@
 - import_playbook: thruk/thruk.yml
 - import_playbook: mod-gearman/mod-gearman.yml
 - import_playbook: mod-gearman-worker-go/mod-gearman-worker-go.yml
+- import_playbook: nagflux/nagflux.yml
 # this should be the last regular playbook
 - import_playbook: git/git.yml
 
