@@ -4,30 +4,42 @@
   become_user: mon
   become_method: su
   become_flags: '-l'
+  vars:
+    version: "0.7.5"
   tasks:
-  - name: "install node_exporter"
-    shell: "go get github.com/ncabatoff/process-exporter; go install github.com/ncabatoff/process-exporter/cmd/process-exporter"
+  - name: "download node_exporter"
+    shell: "wget https://github.com/ncabatoff/process-exporter/releases/download/v{{ version }}/process-exporter-{{ version }}.linux-amd64.tar.gz"
     args:
-      chdir: /omd/sites/mon
-      creates: /omd/sites/mon/go/bin/process-exporter
-
-- hosts: all
-  tasks:
-  - file:
-      src: /omd/sites/mon/go/bin/process-exporter
-      dest: /omd/sites/mon/local/bin/process-exporter
-      owner: mon
-      group: mon
-      state: link
-  - copy: src=/box/devbox/provision/process-exporter/data/process-exporter.yml dest=/omd/sites/mon/etc/process-exporter.yml owner=mon group=mon mode=0644
-  - copy: src=/box/devbox/provision/process-exporter/data/init dest=/omd/sites/mon/etc/init.d/process-exporter owner=mon group=mon mode=0755
+      chdir: /omd/sites/mon/var/tmp
+      creates: "/omd/sites/mon/var/tmp/process-exporter-{{ version }}.linux-amd64.tar.gz"
+  - name: "unpack node_exporter"
+    shell: "tar zxf process-exporter-{{ version }}.linux-amd64.tar.gz"
+    args:
+      chdir: /omd/sites/mon/var/tmp
+      creates: "/omd/sites/mon/var/tmp/process-exporter-{{ version }}.linux-amd64/process-exporter"
+  - copy:
+      src:  "/omd/sites/mon/var/tmp/process-exporter-{{ version }}.linux-amd64/process-exporter"
+      dest: "/omd/sites/mon/local/bin/process-exporter"
+      mode:   0755
+  - copy:
+      src:   /box/devbox/provision/process-exporter/data/process-exporter.yml
+      dest:  /omd/sites/mon/etc/process-exporter.yml
+      mode:  0644
+  - copy:
+      src:   /box/devbox/provision/process-exporter/data/init
+      dest:  /omd/sites/mon/etc/init.d/process-exporter
+      mode:  0755
   - file:
       src: ../init.d/process-exporter
       dest: /omd/sites/mon/etc/rc.d/90-process-exporter
-      owner: mon
-      group: mon
       state: link
-  - copy: src=/box/devbox/provision/process-exporter/data/01-process-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-process-exporter.yml owner=mon group=mon mode=0644
-  - command: omd start mon process-exporter
-  - command: omd reload mon prometheus
-  - copy: src=/box/devbox/provision/process-exporter/data/process.json dest=/omd/sites/mon/var/grafana/dashboards/process.json owner=mon group=mon mode=0644
+  - copy:
+      src:   /box/devbox/provision/process-exporter/data/01-process-exporter.yml
+      dest:  /omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-process-exporter.yml
+      mode:  0644
+  - command: omd start process-exporter
+  - command: omd reload prometheus
+  - copy:
+      src:   /box/devbox/provision/process-exporter/data/process.json
+      dest:  /omd/sites/mon/var/grafana/dashboards/process.json
+      mode:  0644
