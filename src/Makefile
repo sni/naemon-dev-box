@@ -13,7 +13,7 @@ build:
 		cd $$p; \
 		printf "%-25s" $$p; \
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
-			test -f Makefile.PL && perl Makefile.PL >/dev/null 2>&1; \
+			test -f Makefile.PL && PERL5LIB=/omd/versions/default/lib/perl5/lib/perl5 perl Makefile.PL >/dev/null 2>&1; \
 			make >/dev/null 2>&1; \
 			echo "ok"; \
 		else \
