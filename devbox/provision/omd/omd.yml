@@ -1,10 +1,15 @@
 ---
 - hosts: all
   tasks:
-  - yum: name=omd-labs-edition-daily state=installed
-  - yum: name=make state=installed
-  - yum: name=perl-ExtUtils-Manifest state=installed
-  - yum: name=perl-ExtUtils-Install state=installed
+  - yum:
+      name:
+        - omd-labs-edition-daily
+        - make
+        - perl-ExtUtils-Manifest
+        - perl-ExtUtils-Install
+        - perl-File-Which
+        - perl-IPC-Cmd
+      state: installed
   # mon site
   - command: omd create mon creates=/omd/sites/mon
   - command: omd stop mon
