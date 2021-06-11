@@ -1,6 +1,7 @@
 FROM centos:8
 
 RUN dnf -y install centos-release-stream
+RUN dnf -y swap centos-{linux,stream}-repos
 RUN dnf -y distro-sync
 RUN dnf -y install epel-release
 RUN dnf -y install 'dnf-command(config-manager)'
