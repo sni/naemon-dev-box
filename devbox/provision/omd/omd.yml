@@ -1,7 +1,8 @@
 ---
 - hosts: all
   tasks:
-  - yum:
+  - name: "install omd / perl dependencies"
+    yum:
       name:
         - omd-labs-edition-daily
         - make
