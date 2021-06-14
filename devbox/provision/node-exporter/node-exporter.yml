@@ -6,7 +6,7 @@
   become_flags: '-l'
   tasks:
   - name: "install node_exporter"
-    shell: "go get github.com/prometheus/node_exporter; go get github.com/prometheus/node_exporter; go install github.com/prometheus/node_exporter"
+    shell: "go install github.com/prometheus/node_exporter@latest"
     args:
       chdir: /omd/sites/mon
       creates: /omd/sites/mon/go/bin/node_exporter
