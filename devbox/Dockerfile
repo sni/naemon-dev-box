@@ -1,8 +1,9 @@
-FROM centos:8
+FROM rockylinux:8
 
-RUN dnf -y install centos-release-stream
-RUN dnf -y swap centos-{linux,stream}-repos
-RUN dnf -y distro-sync
+RUN dnf clean all
+#RUN dnf -y install centos-release-stream
+#RUN dnf -y swap centos-{linux,stream}-repos
+#RUN dnf -y distro-sync
 RUN dnf -y install epel-release
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf config-manager --set-enabled powertools
