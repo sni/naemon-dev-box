@@ -21,6 +21,11 @@
     args:
       chdir: /src/Thruk
       creates: /src/Thruk/Makefile
+  - name: "make themes"
+    shell: "make themes"
+    args:
+      chdir: /src/Thruk
+      creates: /src/Thruk/themes/themes-available/Light/stylesheets/Light.css
 
 - hosts: all
   become: true
