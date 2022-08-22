@@ -9,23 +9,17 @@
     args:
       chdir: /src
       creates: /src/Thruk/.git
+  - name: set group to dev
+    command: |
+      chgrp dev -R /src/Thruk
+  - name: clone owner permissions to group
+    command: |
+      chmod -R g=u /src/Thruk
   - name: "git clone omd_utils"
     command: git clone git://github.com/sni/omd_utils.git
     args:
       chdir: /src
       creates: /src/omd_utils/.git
-  - name: "perl Makefile.PL"
-    shell: "perl Makefile.PL"
-    environment:
-      PERL5LIB: '/omd/versions/default/lib/perl5/lib/perl5'
-    args:
-      chdir: /src/Thruk
-      creates: /src/Thruk/Makefile
-  - name: "make themes"
-    shell: "make themes"
-    args:
-      chdir: /src/Thruk
-      creates: /src/Thruk/themes/themes-available/Light/stylesheets/Light.css
 
 - hosts: all
   become: true
@@ -39,3 +33,16 @@
       creates: /omd/sites/dev/local/lib/perl5/lib/perl5/File/ChangeNotify.pm
   - name: "activate local thruk"
     shell: "yes | /src/omd_utils/thruk_developer/install.sh /src/Thruk"
+  - name: "perl Makefile.PL"
+    shell: "perl Makefile.PL"
+    environment:
+      PERL5LIB: '/omd/versions/default/lib/perl5/lib/perl5'
+    args:
+      chdir: /src/Thruk
+      creates: /src/Thruk/Makefile
+  - name: "make themes"
+    shell: "make themes"
+    args:
+      chdir: /src/Thruk
+      creates: /src/Thruk/themes/themes-available/Light/stylesheets/Light.css
+
