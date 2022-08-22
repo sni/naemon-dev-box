@@ -11,7 +11,7 @@ build:
 	@echo "*** building:"
 	@for p in $(PROJECTS); do \
 		cd $$p; \
-		printf "%-25s" $$p; \
+		printf "%-30s" $$p; \
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
 			test -f Makefile.PL && PERL5LIB=/omd/versions/default/lib/perl5/lib/perl5 perl Makefile.PL >/dev/null 2>&1; \
 			make >/dev/null 2>&1; \
@@ -27,7 +27,7 @@ status:
 	@echo "*** status:"
 	@for p in $(PROJECTS); do \
 		cd $$p; \
-		printf "%-25s" $$p; \
+		printf "%-30s" $$p; \
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
 			git fetch >/dev/null 2>&1; \
 			STATUS=$$(git status 2>&1); \
@@ -43,7 +43,8 @@ status:
 			elif [[ "$$STATUS" =~ 'Changes to be committed:' ]]; then \
 				echo "dirty"; \
 			else \
-				printf "%-10s %s\n" "ok" "$$(git rev-parse --abbrev-ref HEAD)"; \
+				printf "%-10s %-10s" "ok" "$$(git rev-parse --abbrev-ref HEAD)"; \
+				printf "%s\n" "$$(git log --pretty="format: %cs    %h    %s" --abbrev-commit -1)"; \
 			fi; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
 		else \
@@ -56,7 +57,7 @@ update:
 	@echo "*** update:"
 	@for p in $(PROJECTS); do \
 		cd $$p; \
-		printf "%-25s" $$p; \
+		printf "%-30s" $$p; \
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
 			git pull >/dev/null 2>&1; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
@@ -71,7 +72,7 @@ clean:
 	@echo "*** clean:"
 	@for p in $(PROJECTS); do \
 		cd $$p; \
-		printf "%-25s" $$p; \
+		printf "%-30s" $$p; \
 		git clean -qxfd 2>&1; \
 		chown -R $(OWNER) . >/dev/null 2>&1; \
 		echo "done"; \
