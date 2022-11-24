@@ -16,7 +16,9 @@
   - name: "git init for mon user"
     command: git init chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
-  - command: git add . chdir=/omd/sites/mon name="git add"
+  - name: git add
+    command: git add . chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
-  - command: git commit -m 'initial site created' chdir=/omd/sites/mon name="git commit"
+  - name: git commit
+    command: git commit -m 'initial site created' chdir=/omd/sites/mon
     when: git_exists.stat.exists == False
