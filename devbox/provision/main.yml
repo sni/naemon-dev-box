@@ -11,9 +11,6 @@
         - gdb
         - valgrind
         - wget
-        - gperftools
-        - gv
-        - xauth
         - bash-completion
      state: installed
   - shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
@@ -24,17 +21,19 @@
 - import_playbook: golang/golang.yml
 - import_playbook: process-exporter/process-exporter.yml
 - import_playbook: node-exporter/node-exporter.yml
-- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
+#- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 - import_playbook: thruk/thruk.yml
 - import_playbook: mod-gearman/mod-gearman.yml
 - import_playbook: mod-gearman-worker-go/mod-gearman-worker-go.yml
-- import_playbook: nagflux/nagflux.yml
+#- import_playbook: nagflux/nagflux.yml
 # this should be the last regular playbook
 - import_playbook: git/git.yml
 
 - hosts: all
   tasks:
-  - name: "update repositories"
-    shell: "make update build"
-    args:
-      chdir: /src/
+#  - name: "update repositories"
+#    shell: "make update build"
+#    args:
+#      chdir: /src/
+  - name: "omd restart mon"
+    shell: "omd restart mon"

@@ -37,8 +37,10 @@
       src:   /box/devbox/provision/process-exporter/data/01-process-exporter.yml
       dest:  /omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-process-exporter.yml
       mode:  0644
-  - command: omd start process-exporter
-  - command: omd reload prometheus
+  - name: omd start process-exporter
+    shell: "if omd status -b process-exporter >/dev/null; then omd reload process-exporter; else omd start process-exporter; fi"
+  - name: omd reload prometheus
+    shell: "if omd status -b prometheus >/dev/null; then omd reload prometheus; else omd start prometheus; fi"
   - copy:
       src:   /box/devbox/provision/process-exporter/data/process.json
       dest:  /omd/sites/mon/var/grafana/dashboards/process.json

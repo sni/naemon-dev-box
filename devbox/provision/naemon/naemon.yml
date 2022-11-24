@@ -26,7 +26,7 @@
       creates: /src/naemon-core/.git
   - name: "make naemon-core"
     environment:
-      CFLAGS: '-g3'
+      CFLAGS: '-g -O0'
     shell: "./autogen.sh && make"
     args:
       chdir: /src/naemon-core
@@ -39,14 +39,14 @@
       creates: /src/naemon-livestatus/.git
   - name: "prepare make naemon-livestatus"
     environment:
-      CFLAGS: '-g3'
+      CFLAGS: '-g -O0'
     shell: "autoreconf -s -i && automake --add-missing"
     args:
       chdir: /src/naemon-livestatus
       creates: /src/naemon-livestatus/configure
   - name: "make naemon-livestatus"
     environment:
-      CFLAGS: '-g3'
+      CFLAGS: '-g -O0'
     shell: "NAEMON_LIBS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --libs naemon-uninstalled) NAEMON_CFLAGS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --cflags naemon-uninstalled) ./configure && make"
     args:
       chdir: /src/naemon-livestatus

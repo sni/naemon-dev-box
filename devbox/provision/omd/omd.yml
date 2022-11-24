@@ -12,16 +12,23 @@
         - perl-IPC-Cmd
       state: installed
   # mon site
-  - command: omd create mon creates=/omd/sites/mon
-  - command: omd stop mon
-  - command: omd config mon set CORE none
-  - command: omd config mon set GRAFANA on
-  - command: omd config mon set PROMETHEUS on
-  - command: omd config mon set THRUK_COOKIE_AUTH off
-  - command: omd config mon set DEFAULT_GUI grafana
-  - command: omd config mon set PNP4NAGIOS off
-  - command: omd config mon set TMPFS off
-  - command: omd start mon
+  - name: create mon site
+    command: omd create mon
+    args:
+      creates: /omd/sites/mon
+  - name: omd stop mon
+    command: omd stop mon
+  - name: configure mon site
+    vars:
+        config: |
+            CORE=none
+            GRAFANA=on
+            PROMETHEUS=on
+            THRUK_COOKIE_AUTH=off
+            DEFAULT_GUI=grafana
+            PNP4NAGIOS=off
+            TMPFS=off
+    shell: echo "{{ config }}" | omd config mon change
   # add sudo permissions for mon user
   - lineinfile:
         dest: /etc/sudoers
@@ -42,12 +49,21 @@
 - hosts: all
   tasks:
   # dev site
-  - command: omd create dev creates=/omd/sites/dev
-  - command: omd stop dev
-  - command: omd config dev set PNP4NAGIOS off
-  - command: omd config dev set MOD_GEARMAN on
-  - command: omd config dev set AUTOSTART off
-  - command: omd config dev set TMPFS off
+  - name: create dev site
+    command: omd create dev creates=/omd/sites/dev name="create dev site"
+    args:
+      creates: /omd/sites/dev
+  - name: omd stop dev
+    command: omd stop dev
+  - name: configure dev site
+    vars:
+        config: |
+            PNP4NAGIOS=off
+            MOD_GEARMAN=on
+            AUTOSTART=off
+            TMPFS=off
+    shell: echo "{{ config }}" | omd config dev change
+
   - file:
       src: ../../../share/doc/naemon/example.cfg
       dest: /omd/sites/dev/etc/naemon/conf.d/example.cfg

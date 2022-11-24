@@ -5,7 +5,7 @@ cd $OMD_ROOT
 . $OMD_ROOT/etc/omd/site.conf
 
 NAME="node_exporter"
-DAEMON="$OMD_ROOT/local/bin/$NAME"
+DAEMON="$OMD_ROOT/bin/$NAME"
 OPTIONS=""
 
 case "$1" in

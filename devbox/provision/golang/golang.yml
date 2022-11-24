@@ -1,31 +1,34 @@
 ---
 - hosts: all
-#  vars:
-#    golang: 1.15.2
-#    srcrpm: golang-1.15.2-1.fc34.src.rpm
-#    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/{{ golang }}/1.fc34/src/{{ srcrpm }}
+  vars:
+    golang: 1.19.3-2.fc38
+    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/1.19.3/2.fc38
   tasks:
   - name: "install golang"
     yum:
         name:
-#            - glibc-static
-#            - rpm-build
             - golang
         state: installed
-#  - name: "fetch golang source rpm"
-#    get_url:
-#        url: "{{ srcurl }}"
-#        dest: "/var/tmp/{{ srcrpm }}"
-#  - name: "rebuild golang rpm"
-#    command: rpmbuild --rebuild --nocheck {{ srcrpm }}
-#    args:
-#      chdir: /var/tmp
-#      creates: /root/rpmbuild/RPMS/x86_64/golang-{{ golang }}-1.el8.x86_64.rpm
-#  - name: "install local golang rpms"
-#    yum:
-#        name:
-#            - /root/rpmbuild/RPMS/x86_64/golang-{{ golang }}-1.el8.x86_64.rpm
-#            - /root/rpmbuild/RPMS/x86_64/golang-bin-{{ golang }}-1.el8.x86_64.rpm
-#            - /root/rpmbuild/RPMS/noarch/golang-src-{{ golang }}-1.el8.noarch.rpm
-#        state: installed
-#        disable_gpg_check: yes
+  - name: "fetch golang x86 rpm"
+    get_url:
+        url: "{{ srcurl }}/x86_64/{{ item }}"
+        dest: "/tmp/{{ item }}"
+    with_items:
+        - golang-{{ golang }}.x86_64.rpm
+        - golang-bin-{{ golang }}.x86_64.rpm
+        - golang-shared-{{ golang }}.x86_64.rpm
+  - name: "fetch golang noarch rpm"
+    get_url:
+        url: "{{ srcurl }}/noarch/{{ item }}"
+        dest: "/tmp/{{ item }}"
+    with_items:
+        - golang-src-{{ golang }}.noarch.rpm
+  - name: "install local golang rpms"
+    yum:
+        name:
+            - /tmp/golang-{{ golang }}.x86_64.rpm
+            - /tmp/golang-bin-{{ golang }}.x86_64.rpm
+            - /tmp/golang-shared-{{ golang }}.x86_64.rpm
+            - /tmp/golang-src-{{ golang }}.noarch.rpm
+        state: installed
+        disable_gpg_check: yes

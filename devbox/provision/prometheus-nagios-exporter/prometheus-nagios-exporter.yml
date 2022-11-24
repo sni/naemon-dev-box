@@ -28,6 +28,8 @@
       group: mon
       state: link
   - copy: src=/box/devbox/provision/prometheus-nagios-exporter/data/01-prometheus-nagios-exporter.yml dest=/omd/sites/mon/etc/prometheus/prometheus.d/scrape_configs/static/01-prometheus-nagios-exporter.yml owner=mon group=mon mode=0644
-  - command: omd start mon prometheus-nagios-exporter
-  - command: omd reload mon prometheus
+  - name: omd start mon prometheus-nagios-exporter
+    shell: "if omd status -b prometheus-nagios-exporter >/dev/null; then omd reload prometheus-nagios-exporter; else omd start prometheus-nagios-exporter; fi"
+  - name: omd reload mon prometheus
+    shell: "if omd status -b prometheus >/dev/null; then omd reload prometheus; else omd start prometheus; fi"
   - copy: src=/box/devbox/provision/prometheus-nagios-exporter/data/livestatus.json dest=/omd/sites/mon/var/grafana/dashboards/livestatus.json owner=mon group=mon mode=0644

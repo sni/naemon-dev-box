@@ -15,5 +15,5 @@ echo
 echo "starting Apache web server..."
 echo "--------------------------------------"
 /usr/libexec/httpd-ssl-gencerts
-exec /usr/sbin/apachectl -D FOREGROUND &
+exec /usr/sbin/httpd -D FOREGROUND &
 wait
