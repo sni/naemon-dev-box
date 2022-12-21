@@ -20,14 +20,13 @@
       creates: /src/mod_gearman/.git
   - name: "mod_gearman autogen"
     environment:
-      CFLAGS: '-g3'
-    shell: "./autogen.sh"
+      PKG_CONFIG_PATH: '/src/naemon-core/.'
+    shell: "./autogen.sh --with-gearman=/omd/versions/default --enable-debug"
     args:
       chdir: /src/mod_gearman
       creates: /src/mod_gearman/configure
   - name: "make mod_gearman"
     environment:
-      CFLAGS: '-g3'
       PKG_CONFIG_PATH: '/src/naemon-core/.'
     shell: "./configure --with-gearman=/omd/versions/default --enable-debug; make"
     args:
