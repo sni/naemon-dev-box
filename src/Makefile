@@ -44,7 +44,8 @@ status:
 				echo "dirty"; \
 			else \
 				printf "%-10s %-10s" "ok" "$$(git rev-parse --abbrev-ref HEAD)"; \
-				printf "%s\n" "$$(git log --pretty="format: %cs    %h    %s" --abbrev-commit -1)"; \
+				printf "%-12s %-10s" $$(git log --pretty="format: %cs %h" --abbrev-commit -1); \
+				printf "%s\n" "$$(git log --pretty="format: %s" --abbrev-commit -1)"; \
 			fi; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
 		else \
@@ -61,7 +62,9 @@ update:
 		if [ $$(git status 2>&1 | grep -cP '(working tree clean|working directory clean)') -eq 1 ]; then \
 			git pull >/dev/null 2>&1; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
-			printf "%-10s %s\n" "updated" "$$(git rev-parse --abbrev-ref HEAD)"; \
+			printf "%-10s %-10s" "updated" "$$(git rev-parse --abbrev-ref HEAD)"; \
+			printf "%-12s %-10s" $$(git log --pretty="format: %cs %h" --abbrev-commit -1); \
+			printf "%s\n" "$$(git log --pretty="format: %s" --abbrev-commit -1)"; \
 		else \
 			echo "dirty"; \
 		fi; \
