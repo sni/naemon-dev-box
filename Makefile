@@ -29,11 +29,11 @@ prepare:
 	docker-compose build
 	docker-compose up --remove-orphans --scale base=0 -d
 	docker ps
-	@docker-compose logs -f | while read LOGLINE; do \
+	@while read LOGLINE; do \
 		echo "$${LOGLINE}"; \
-		[[ "$${LOGLINE}" == *"starting Apache web server"* ]] && pkill -P $$$$ docker-compose && exit 0; \
-		[[ "$${LOGLINE}" == *"ERROR"* ]] && pkill -P $$$$ docker-compose && exit 1; \
-	done
+		[[ "$${LOGLINE}" == *"starting Apache web server"* ]] && exit 0; \
+		[[ "$${LOGLINE}" == *"ERROR"* ]] && exit 1; \
+	done < <(docker-compose logs -f)
 
 
 shell:
