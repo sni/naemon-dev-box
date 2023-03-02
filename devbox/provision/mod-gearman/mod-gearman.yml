@@ -21,6 +21,7 @@
   - name: "mod_gearman autogen"
     environment:
       PKG_CONFIG_PATH: '/src/naemon-core/.'
+      C_INCLUDE_PATH: '/src/naemon-core/.:/src/naemon-core/src/.'
     shell: "./autogen.sh --with-gearman=/omd/versions/default --enable-debug"
     args:
       chdir: /src/mod_gearman
@@ -28,6 +29,7 @@
   - name: "make mod_gearman"
     environment:
       PKG_CONFIG_PATH: '/src/naemon-core/.'
+      C_INCLUDE_PATH: '/src/naemon-core/.:/src/naemon-core/src/.'
     shell: "./configure --with-gearman=/omd/versions/default --enable-debug; make"
     args:
       chdir: /src/mod_gearman

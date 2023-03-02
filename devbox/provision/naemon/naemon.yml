@@ -10,8 +10,8 @@
     lineinfile:
         dest: /omd/sites/dev/etc/init.d/naemon
         state: present
-        regexp: '^BIN'
-        line: 'BIN=/src/naemon-core/src/naemon/.libs/lt-naemon'
+        regexp: '^DAEMON'
+        line: 'DAEMON=/src/naemon-core/src/naemon/naemon'
   - name: "replace naemon-livestatus path in module config"
     lineinfile:
         dest: /omd/sites/dev/etc/naemon/naemon.d/livestatus.cfg
@@ -37,17 +37,22 @@
     args:
       chdir: /src
       creates: /src/naemon-livestatus/.git
-  - name: "prepare make naemon-livestatus"
+  - name: "automake naemon-livestatus"
     environment:
       CFLAGS: '-g -O0'
     shell: "autoreconf -s -i && automake --add-missing"
     args:
       chdir: /src/naemon-livestatus
       creates: /src/naemon-livestatus/configure
-  - name: "make naemon-livestatus"
+  - name: "configure naemon-livestatus"
     environment:
       CFLAGS: '-g -O0'
-    shell: "NAEMON_LIBS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --libs naemon-uninstalled) NAEMON_CFLAGS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --cflags naemon-uninstalled) ./configure && make"
+    shell: "NAEMON_LIBS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --libs naemon-uninstalled) NAEMON_CFLAGS=$(PKG_CONFIG_PATH=../naemon-core/ pkg-config --cflags naemon-uninstalled) ./configure"
+    args:
+      chdir: /src/naemon-livestatus
+      creates: /src/naemon-livestatus/src/Makefile
+  - name: "make naemon-livestatus"
+    shell: "make"
     args:
       chdir: /src/naemon-livestatus
       creates: /src/naemon-livestatus/src/.libs/livestatus.so
