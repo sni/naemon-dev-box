@@ -13,12 +13,12 @@ build:
 status:
 	$(MAKE) -C src status
 
-update:
+update: trychown
 	$(MAKE) -C src update
 	docker-compose pull
 	for IMG in $$(grep FROM */Dockerfile | awk '{ print $$2 }' | sort -u); do docker pull $$IMG; done
 
-clean:
+clean: trychown
 	$(MAKE) -C src clean
 	docker-compose kill
 	docker-compose rm -f
@@ -38,3 +38,6 @@ prepare:
 
 shell:
 	docker exec -ti "naemon-dev-box_devbox_1" env TERM=xterm bash -l
+
+trychown:
+	-sudo chown $$USER: -R src/
