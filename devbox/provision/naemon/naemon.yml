@@ -12,6 +12,12 @@
         state: present
         regexp: '^DAEMON'
         line: 'DAEMON=/src/naemon-core/src/naemon/naemon'
+  - name: "replace naemon binary path in init script II"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/naemon
+        state: present
+        regexp: '^# BINARY:'
+        line: '# BINARY: .libs/lt-naemon'
   - name: "replace naemon-livestatus path in module config"
     lineinfile:
         dest: /omd/sites/dev/etc/naemon/naemon.d/livestatus.cfg
