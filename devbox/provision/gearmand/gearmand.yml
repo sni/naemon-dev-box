@@ -1,0 +1,47 @@
+# build gearmand from source
+---
+- hosts: all
+  tasks:
+  - name: "gearmand build requirements"
+    yum: name=libuuid-devel,boost-devel,sqlite-devel,python3-sphinx,libevent-devel state=installed
+  - name: "replace gearmand binary path in init script"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/gearmand
+        state: present
+        regexp: '^DAEMON'
+        line: 'DAEMON=/src/gearmand/gearmand/gearmand'
+
+  - name: "replace gearmand binary path in init script II"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/gearmand
+        state: present
+        regexp: '^# BINARY:'
+        line: '# BINARY: /src/gearmand/gearmand/gearmand'
+
+  - name: "git clone gearmand"
+    command: git clone https://github.com/gearmand/gearmand.git
+    args:
+      chdir: /src
+      creates: /src/gearmand/.git
+
+  - name: "bootstrap gearmand"
+    shell: "./bootstrap.sh"
+    args:
+      chdir: /src/gearmand
+      creates: /src/gearmand/configure
+
+  - name: "configure gearmand"
+    environment:
+      CFLAGS: '-g -O0'
+    shell: "./configure"
+    args:
+      chdir: /src/gearmand
+      creates: /src/gearmand/Makefile
+
+  - name: "make gearmand"
+    environment:
+      CFLAGS: '-g -O0'
+    shell: "make"
+    args:
+      chdir: /src/gearmand
+      creates: /src/gearmand/gearmand/gearmand
