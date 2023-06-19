@@ -2,7 +2,7 @@
 
 echo "ansible provisioning..."
 echo "--------------------------------------"
-bash /box/devbox/provision/ansible.sh || exit 1
+bash /box/devbox/provision/ansible.sh
 
 echo
 
