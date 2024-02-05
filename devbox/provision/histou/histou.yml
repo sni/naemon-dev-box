@@ -1,0 +1,20 @@
+# clone nagflux
+---
+- hosts: all
+  tasks:
+  - name: "git clone histou"
+    command: git clone https://github.com/ConSol-Monitoring/histou.git
+    args:
+      chdir: /src
+      creates: /src/histou/.git
+  - name: check if histou is a directory
+    stat:
+      path: /opt/omd/sites/dev/share/histou
+    register: folder_stat
+  - name: move folder if it's a real folder
+    command: mv /opt/omd/sites/dev/share/histou /opt/omd/sites/dev/share/histou.orig
+    when: folder_stat.stat.exists and folder_stat.stat.isdir and not folder_stat.stat.islnk
+  - file:
+      src: /src/histou
+      dest: /opt/omd/sites/dev/share/histou
+      state: link
