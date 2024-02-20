@@ -19,7 +19,7 @@
         line: '# BINARY: /src/gearmand/gearmand/gearmand'
 
   - name: "git clone gearmand"
-    command: git clone https://github.com/gearmand/gearmand.git
+    command: git clone https://github.com/gearman/gearmand.git
     args:
       chdir: /src
       creates: /src/gearmand/.git
