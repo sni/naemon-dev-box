@@ -1,8 +1,8 @@
 ---
 - hosts: all
   vars:
-    golang: 1.21.6-1.fc40
-    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/1.21.6/1.fc40/
+    golang: 1.22.1-1.fc41
+    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/1.22.1/1.fc41/
   tasks:
   - name: "install golang"
     yum:
