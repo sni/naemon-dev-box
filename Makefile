@@ -27,6 +27,9 @@ clean: trychown
 
 prepare:
 	docker compose build
+	$(MAKE) up
+
+up:
 	docker compose up --remove-orphans -d
 	docker ps
 	@while read LOGLINE; do \
@@ -35,6 +38,12 @@ prepare:
 		[[ "$${LOGLINE}" == *"ERROR"* ]] && exit 1; \
 	done < <(docker compose logs -f)
 
+stop:
+	docker compose stop
+
+start:
+	docker compose start
+	docker ps
 
 shell:
 	docker exec -ti "naemon-dev-box_devbox_1" env TERM=xterm bash -l
