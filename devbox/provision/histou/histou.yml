@@ -18,3 +18,16 @@
       src: /src/histou
       dest: /opt/omd/sites/dev/share/histou
       state: link
+
+  - name: check if histou.js is a symlink
+    stat:
+      path: /opt/omd/sites/dev/share/grafana/public/dashboards/histou.js
+    register: link_stat
+  - name: move file if it's a real file
+    command: mv /opt/omd/sites/dev/share/grafana/public/dashboards/histou.js /opt/omd/sites/dev/share/grafana/public/dashboards/histou.js.orig
+    when: link_stat.stat.exists and link_stat.stat.isreg and not link_stat.stat.islnk
+  - file:
+      src: /src/histou/histou.js
+      dest: /opt/omd/sites/dev/share/grafana/public/dashboards/histou.js
+      state: link
+
