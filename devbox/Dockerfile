@@ -7,6 +7,7 @@ RUN dnf -y config-manager --set-enabled crb
 RUN dnf -y update
 RUN dnf -y install lsof vim git sudo openssh-server passwd file
 RUN dnf -y install httpd mod_ssl
+RUN dnf -y install ansible
 RUN /usr/libexec/httpd-ssl-gencerts
 
 RUN echo -e "ZONE=\"Europe/Berlin\"\nUTC=true" > /etc/sysconfig/clock

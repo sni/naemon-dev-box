@@ -109,7 +109,7 @@
     args:
       creates: /omd/sites/dev/.ssh/id_rsa
   - name: Set authorized key taken from file
-    authorized_key:
+    ansible.posix.authorized_key:
       user: dev
       state: present
       key: "{{ lookup('file', '/omd/sites/dev/.ssh/id_rsa.pub') }}"
