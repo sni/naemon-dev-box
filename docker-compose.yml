@@ -11,6 +11,10 @@ services:
       - ./:/box:ro
       - ./src:/src:rw
       - /etc/localtime:/etc/localtime:ro
+    # required to start x11 programms (run: "xhost +local:" on host)
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=${DISPLAY}
     # required for strace / gdb
     cap_add:
         - SYS_PTRACE
