@@ -46,7 +46,7 @@ start:
 	docker ps
 
 shell:
-	docker exec -ti "naemon-dev-box_devbox_1" env TERM=xterm bash -l
+	docker exec -ti "naemon-dev-box-devbox-1" env TERM=xterm bash -l
 
 trychown:
 	-sudo chown $$USER: -R src/
