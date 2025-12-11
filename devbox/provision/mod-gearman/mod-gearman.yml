@@ -3,7 +3,16 @@
 - hosts: all
   tasks:
   - name: "mod-gearman build requirements"
-    yum: name=libtool,libtool-ltdl-devel,libevent-devel,ncurses-devel,autoconf,automake state=installed
+    yum:
+      name:
+        - libtool
+        - libtool-ltdl-devel
+        - libevent-devel
+        - ncurses-devel
+        - autoconf
+        - automake
+        - openssl-devel
+      state: installed
   - name: "replace mod-gearman module in naemon config"
     lineinfile:
         dest: /omd/sites/dev/etc/naemon/naemon.d/mod-gearman.cfg
