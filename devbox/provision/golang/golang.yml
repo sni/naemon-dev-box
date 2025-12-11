@@ -1,34 +1,27 @@
 ---
 - hosts: all
   vars:
-    golang: 1.22.1-1.fc41
-    srcurl: https://kojipkgs.fedoraproject.org/packages/golang/1.22.1/1.fc41/
+    golang: 1.25.5
+    srcurl: https://go.dev/dl/
   tasks:
-  - name: "install golang"
-    yum:
-        name:
-            - golang
-        state: installed
-  - name: "fetch golang x86 rpm"
+  - name: "fetch golang x86 tarball"
     get_url:
-        url: "{{ srcurl }}/x86_64/{{ item }}"
-        dest: "/tmp/{{ item }}"
-    with_items:
-        - golang-{{ golang }}.x86_64.rpm
-        - golang-bin-{{ golang }}.x86_64.rpm
-        - golang-shared-{{ golang }}.x86_64.rpm
-  - name: "fetch golang noarch rpm"
-    get_url:
-        url: "{{ srcurl }}/noarch/{{ item }}"
-        dest: "/tmp/{{ item }}"
-    with_items:
-        - golang-src-{{ golang }}.noarch.rpm
-  - name: "install local golang rpms"
-    yum:
-        name:
-            - /tmp/golang-{{ golang }}.x86_64.rpm
-            - /tmp/golang-bin-{{ golang }}.x86_64.rpm
-            - /tmp/golang-shared-{{ golang }}.x86_64.rpm
-            - /tmp/golang-src-{{ golang }}.noarch.rpm
-        state: installed
-        disable_gpg_check: yes
+        url: "{{ srcurl }}/go{{ golang }}.linux-amd64.tar.gz"
+        dest: "/var/tmp/go{{ golang }}.linux-amd64.tar.gz"
+  - name: "create golang install dir"
+    file:
+        path: /usr/local/go-{{ golang }}
+        state: directory
+  - name: "unpack golang x86 tarball"
+    unarchive:
+        src: "/var/tmp/go{{ golang }}.linux-amd64.tar.gz"
+        dest: /usr/local/go-{{ golang }}
+        extra_opts: [--strip-components=1]
+        creates: /usr/local/go-{{ golang }}/bin/go
+  - name: "append golang to profile"
+    lineinfile:
+        path: /etc/profile.d/golang.sh
+        line: 'export PATH=/usr/local/go-{{ golang }}/bin:$PATH'
+        regexp: 'export PATH='
+        create: yes
+        state: present

@@ -22,7 +22,9 @@
       dest: ~/go/src/github.com/ConSol/nagflux
       state: link
   - name: "make nagflux"
-    shell: "make"
+    shell: |
+      source /etc/profile.d/golang.sh
+      make
     args:
       chdir: /src/nagflux
       creates: /src/nagflux/nagflux

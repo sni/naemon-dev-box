@@ -24,11 +24,11 @@
 - import_playbook: node-exporter/node-exporter.yml
 #- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 - import_playbook: thruk/thruk.yml
-- import_playbook: gearmand/gearmand.yml
+#- import_playbook: gearmand/gearmand.yml
 - import_playbook: mod-gearman/mod-gearman.yml
 - import_playbook: mod-gearman-worker-go/mod-gearman-worker-go.yml
 #- import_playbook: nagflux/nagflux.yml
-- import_playbook: histou/histou.yml
+#- import_playbook: histou/histou.yml
 # this should be the last regular playbook
 - import_playbook: git/git.yml
 

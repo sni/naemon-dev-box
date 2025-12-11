@@ -22,7 +22,9 @@
       dest: ~/go/src/github.com/ConSol/mod-gearman-worker-go
       state: link
   - name: "make mod-gearman-worker-go"
-    shell: "make"
+    shell: |
+      source /etc/profile.d/golang.sh
+      make
     args:
       chdir: /src/mod-gearman-worker-go
       creates: /src/mod-gearman-worker-go/mod-gearman-worker-go

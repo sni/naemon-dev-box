@@ -3,7 +3,12 @@
 - hosts: all
   tasks:
   - name: "thruk build requirements"
-    yum: name=make,perl-Module-Install,npm state=installed
+    yum:
+      name:
+        - make
+        - perl-Module-Install
+        - npm
+      state: installed
   - name: "git clone thruk"
     command: git clone https://github.com/sni/thruk.git
     args:
@@ -45,4 +50,3 @@
     args:
       chdir: /src/thruk
       creates: /src/thruk/themes/themes-available/Light/stylesheets/Light.css
-
