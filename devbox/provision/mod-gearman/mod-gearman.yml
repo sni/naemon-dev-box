@@ -5,6 +5,7 @@
   - name: "mod-gearman build requirements"
     yum:
       name:
+        - libasan
         - libtool
         - libtool-ltdl-devel
         - libevent-devel
@@ -13,6 +14,7 @@
         - autoconf-archive
         - automake
         - openssl-devel
+        - cppcheck
       state: installed
   - name: "replace mod-gearman module in naemon config"
     lineinfile:
