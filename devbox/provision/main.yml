@@ -3,19 +3,30 @@
   tasks:
   - yum:
      name:
+        - bash-completion
+        - gdb
+        - git
         - glibc-langpack-en.x86_64
         - lsof
+        - rsync
         - telnet
-        - git
-        - vim
-        - gdb
         - valgrind
+        - vim
         - wget
-        - bash-completion
      state: installed
-  - shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
-  - shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
-  - shell: "git config --global --add safe.directory '*'"
+  - name: set motd
+    shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
+  - name: add alias
+    shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
+  - name: sync skel/. if exists
+    shell: "test -d /box/skel/. && rsync -a --chown root:root /box/skel/. /root/."
+  - name: run auto scripts
+    shell: |
+      for file in $(ls -1 /root/.autostart_*.sh); do
+        test -x "$file" && echo "*** $file" && "$file"
+      done
+  - name: add safe folder to git
+    shell: "git config --global --add safe.directory '*'"
 - import_playbook: omd/omd.yml
 - import_playbook: apache/apache.yml
 - import_playbook: naemon/naemon.yml
@@ -29,14 +40,11 @@
 - import_playbook: mod-gearman-worker-go/mod-gearman-worker-go.yml
 #- import_playbook: nagflux/nagflux.yml
 #- import_playbook: histou/histou.yml
+
 # this should be the last regular playbook
 - import_playbook: git/git.yml
 
 - hosts: all
   tasks:
-#  - name: "update repositories"
-#    shell: "make update build"
-#    args:
-#      chdir: /src/
   - name: "omd restart mon"
     shell: "omd restart mon"
