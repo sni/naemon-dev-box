@@ -9,22 +9,11 @@
         - perl-Module-Install
         - npm
       state: installed
-  - name: "git clone thruk"
-    command: git clone https://github.com/sni/thruk.git
+  - name: rebuild thruk
+    command: make build thruk
     args:
       chdir: /src
-      creates: /src/thruk/.git
-  - name: set group to dev
-    command: |
-      chgrp dev -R /src/thruk
-  - name: clone owner permissions to group
-    command: |
-      chmod -R g=u /src/thruk
-  - name: "git clone omd_utils"
-    command: git clone https://github.com/sni/omd_utils.git
-    args:
-      chdir: /src
-      creates: /src/omd_utils/.git
+      creates: /src/thruk/Makefile
 
 - hosts: all
   become: true
@@ -32,21 +21,5 @@
   become_method: su
   become_flags: '-l'
   tasks:
-  - name: "install File::ChangeNotify"
-    shell: "cpanm -n File::ChangeNotify"
-    args:
-      creates: /omd/sites/dev/local/lib/perl5/lib/perl5/File/ChangeNotify.pm
   - name: "activate local thruk"
     shell: "yes | /src/omd_utils/thruk_developer/install.sh /src/thruk"
-  - name: "perl Makefile.PL"
-    shell: "perl Makefile.PL"
-    environment:
-      PERL5LIB: '/omd/versions/default/lib/perl5/lib/perl5'
-    args:
-      chdir: /src/thruk
-      creates: /src/thruk/Makefile
-  - name: "make themes"
-    shell: "make themes"
-    args:
-      chdir: /src/thruk
-      creates: /src/thruk/themes/themes-available/Light/stylesheets/Light.css

@@ -1,1 +1,6 @@
 *
+!Makefile
+!.gitignore
+!.builds
+!.builds/*
+!.clone_urls

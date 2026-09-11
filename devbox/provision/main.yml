@@ -8,6 +8,7 @@
         - git
         - glibc-langpack-en.x86_64
         - lsof
+        - ripgrep
         - rsync
         - telnet
         - valgrind
@@ -17,7 +18,11 @@
   - name: set motd
     shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
   - name: add alias
-    shell: echo "alias la='ls -la'" > /etc/profile.d/dev.sh
+    shell: |
+        echo "alias la='ls -la'"                                 > /etc/profile.d/dev.sh
+        echo "alias psg='ps -efl | grep'"                       >> /etc/profile.d/dev.sh
+        echo 'export LD_LIBRARY_PATH=/omd/versions/default/lib' >> /etc/profile.d/dev.sh
+        echo 'export PATH=$PATH:/omd/versions/default/bin/'     >> /etc/profile.d/dev.sh
   - name: sync skel/. if exists
     shell: "test -d /box/skel/. && rsync -a --chown root:root /box/skel/. /root/."
   - name: run auto scripts
@@ -27,12 +32,15 @@
       done
   - name: add safe folder to git
     shell: "git config --global --add safe.directory '*'"
+  - name: clone projects
+    shell: |
+      cd /src && make clone
 - import_playbook: omd/omd.yml
 - import_playbook: apache/apache.yml
 - import_playbook: naemon/naemon.yml
 - import_playbook: golang/golang.yml
-- import_playbook: process-exporter/process-exporter.yml
-- import_playbook: node-exporter/node-exporter.yml
+#- import_playbook: process-exporter/process-exporter.yml
+#- import_playbook: node-exporter/node-exporter.yml
 #- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 - import_playbook: thruk/thruk.yml
 #- import_playbook: gearmand/gearmand.yml

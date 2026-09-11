@@ -22,27 +22,8 @@
         state: present
         regexp: '^broker_module='
         line: 'broker_module=/src/mod_gearman/mod_gearman_naemon.o config=/omd/sites/dev/etc/mod-gearman/server.cfg'
-
-- hosts: all
-  tasks:
-  - name: "git clone mod-gearman"
-    command: git clone https://github.com/sni/mod_gearman.git
+  - name: rebuild mod_gearman
+    command: make build mod_gearman
     args:
       chdir: /src
-      creates: /src/mod_gearman/.git
-  - name: "mod_gearman autogen"
-    environment:
-      PKG_CONFIG_PATH: '/src/naemon-core/.'
-      C_INCLUDE_PATH: '/src/naemon-core/.:/src/naemon-core/src/.'
-    shell: "./autogen.sh --with-gearman=/omd/versions/default --enable-debug"
-    args:
-      chdir: /src/mod_gearman
-      creates: /src/mod_gearman/configure
-  - name: "make mod_gearman"
-    environment:
-      PKG_CONFIG_PATH: '/src/naemon-core/.'
-      C_INCLUDE_PATH: '/src/naemon-core/.:/src/naemon-core/src/.'
-    shell: "./configure --with-gearman=/omd/versions/default --enable-debug; make"
-    args:
-      chdir: /src/mod_gearman
       creates: /src/mod_gearman/mod_gearman_naemon.o
