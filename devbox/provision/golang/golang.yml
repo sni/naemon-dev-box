@@ -1,7 +1,7 @@
 ---
 - hosts: all
   vars:
-    golang: 1.25.5
+    golang: 1.27.1
     srcurl: https://go.dev/dl/
   tasks:
   - name: "fetch golang x86 tarball"
@@ -25,3 +25,8 @@
         regexp: 'export PATH='
         create: yes
         state: present
+  - name: "create a symlink"
+    file:
+        src: /usr/local/go-{{ golang }}/bin/go
+        dest: /usr/local/bin/go
+        state: link
