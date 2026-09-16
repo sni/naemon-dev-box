@@ -1,5 +1,6 @@
 https://github.com/consol-monitoring/mod-gearman-worker-go.git
 https://github.com/consol-monitoring/snclient.git
+https://github.com/consol-monitoring/pnp.git
 https://github.com/naemon/naemon-core.git
 https://github.com/naemon/naemon-livestatus.git
 https://github.com/sni/lmd.git
