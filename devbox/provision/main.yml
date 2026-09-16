@@ -17,14 +17,56 @@
      state: installed
   - name: set motd
     shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
-  - name: add alias
-    shell: |
-        echo "alias la='ls -la'"                                 > /etc/profile.d/dev.sh
-        echo "alias psg='ps -efl | grep'"                       >> /etc/profile.d/dev.sh
-        echo 'export LD_LIBRARY_PATH=/omd/versions/default/lib' >> /etc/profile.d/dev.sh
-        echo 'export PATH=$PATH:/omd/versions/default/bin/'     >> /etc/profile.d/dev.sh
+  - name: "create dev.sh script"
+    copy:
+      dest: /usr/local/bin/dev.sh
+      mode: '0755'
+      owner: root
+      group: root
+      content: |
+        #!/usr/bin/env bash
+        echo "**************************"
+        for IP in $(ip a | grep inet | grep -v inet6 | grep -v 127.0. | awk '{ print $2 }' | sed -e 's/\/.*/\/dev\//'); do
+          echo "https://$IP"
+        done
+        echo "**************************"
+
+        su - dev
+
+  - name: "create profile source"
+    copy:
+      dest: /etc/profile.d/naemon-dev-box-profile.sh
+      mode: '0644'
+      owner: root
+      group: root
+      content: |
+          alias la='ls -la'
+          alias l='ls -la'
+          alias psg='ps -efl | grep'
+          alias vi='vim'
+          alias d='/usr/local/bin/dev.sh'
+          alias ansible.sh='/box/devbox/provision/ansible.sh'
+          export LD_LIBRARY_PATH=/omd/versions/default/lib
+          export PATH=$PATH:/omd/versions/default/bin/
+          export HISTCONTROL="ignoredups:ignorespace:erasedups"
+          export HISTSIZE=100000
+          shopt -s histappend
+          PROMPT_COMMAND="history -a"
+          mkdir -p /src/.tmp >/dev/null 2>&1
+          chmod 0777 /src/.tmp >/dev/null 2>&1
+          export HISTFILE=/src/.tmp/.bash_history.$UID
+
   - name: sync skel/. if exists
     shell: "test -d /box/skel/. && rsync -a --chown root:root /box/skel/. /root/."
+
+  - name: "append sourcing profile to .bashrc"
+    lineinfile:
+        path: /root/.bashrc
+        line: 'test -f ~/.profile && source ~/.profile'
+        regexp: '\.profile'
+        create: yes
+        state: present
+
   - name: run auto scripts
     shell: |
       for file in $(ls -1 /root/.autostart_*.sh); do
