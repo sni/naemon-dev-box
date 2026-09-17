@@ -77,8 +77,13 @@ status:
 			elif [[ "$$STATUS" =~ 'Changes to be committed:' ]]; then \
 				echo "dirty"; \
 			else \
-				printf "%-10s %-10s" "ok" "$$(git rev-parse --abbrev-ref HEAD)"; \
-				printf "%-12s %-10s" $$(git log --pretty="format: %cs %h" --abbrev-commit -1); \
+				br=$$(git rev-parse --abbrev-ref HEAD 2> /dev/null); \
+				if [ "$$br"  = "HEAD" ]; then \
+					tag=$$(git describe --tags --exact-match 2> /dev/null); \
+					if [ -n "$$tag" ]; then br="$$tag"; fi; \
+				fi; \
+				printf "%-10s %-10s " "ok" "$$br"; \
+				printf "%-12s %-10s " $$(git log --pretty="format: %cs %h" --abbrev-commit -1); \
 				printf "%s\n" "$$(git log --pretty="format: %s" --abbrev-commit -1)"; \
 			fi; \
 			chown -R $(OWNER) . >/dev/null 2>&1; \
