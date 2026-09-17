@@ -4,6 +4,8 @@
     golang: 1.27.1
     srcurl: https://go.dev/dl/
   tasks:
+  - debug:
+      msg: "### golang.yml"
   - name: "fetch golang x86 tarball"
     get_url:
         url: "{{ srcurl }}/go{{ golang }}.linux-amd64.tar.gz"

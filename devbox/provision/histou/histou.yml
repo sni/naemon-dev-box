@@ -2,11 +2,8 @@
 ---
 - hosts: all
   tasks:
-  - name: "git clone histou"
-    command: git clone https://github.com/ConSol-Monitoring/histou.git
-    args:
-      chdir: /src
-      creates: /src/histou/.git
+  - debug:
+      msg: "### histou.yml"
   - name: check if histou is a directory
     stat:
       path: /opt/omd/sites/dev/share/histou
@@ -30,4 +27,3 @@
       src: /src/histou/histou.js
       dest: /opt/omd/sites/dev/share/grafana/public/dashboards/histou.js
       state: link
-

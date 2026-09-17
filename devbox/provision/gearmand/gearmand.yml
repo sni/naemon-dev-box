@@ -2,8 +2,19 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### gearmand.yml"
   - name: "gearmand build requirements"
-    yum: name=libuuid-devel,boost-devel,sqlite-devel,python3-sphinx,libevent-devel state=installed
+    yum:
+      name:
+        - libasan
+        - libuuid-devel
+        - boost-devel
+        - sqlite-devel
+        - python3-sphinx
+        - libevent-devel
+        - libpq-devel
+      state: installed
   - name: "replace gearmand binary path in init script"
     lineinfile:
         dest: /omd/sites/dev/etc/init.d/gearmand
@@ -18,30 +29,8 @@
         regexp: '^# BINARY:'
         line: '# BINARY: /src/gearmand/gearmand/gearmand'
 
-  - name: "git clone gearmand"
-    command: git clone https://github.com/gearman/gearmand.git
+  - name: rebuild gearmand
+    command: make build gearmand
     args:
       chdir: /src
-      creates: /src/gearmand/.git
-
-  - name: "bootstrap gearmand"
-    shell: "./bootstrap.sh"
-    args:
-      chdir: /src/gearmand
-      creates: /src/gearmand/configure
-
-  - name: "configure gearmand"
-    environment:
-      CFLAGS: '-g -O0'
-    shell: "./configure"
-    args:
-      chdir: /src/gearmand
-      creates: /src/gearmand/Makefile
-
-  - name: "make gearmand"
-    environment:
-      CFLAGS: '-g -O0'
-    shell: "make"
-    args:
-      chdir: /src/gearmand
       creates: /src/gearmand/gearmand/gearmand

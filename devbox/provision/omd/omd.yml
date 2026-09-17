@@ -1,6 +1,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### omd.yml"
   - name: "install omd / perl dependencies"
     yum:
       name:

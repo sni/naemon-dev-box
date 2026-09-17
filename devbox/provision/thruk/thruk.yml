@@ -2,6 +2,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### thruk.yml"
   - name: "thruk build requirements"
     yum:
       name:

@@ -7,6 +7,8 @@
   vars:
     version: "0.7.5"
   tasks:
+  - debug:
+      msg: "### process-exporter.yml"
   - name: "download node_exporter"
     shell: "wget https://github.com/ncabatoff/process-exporter/releases/download/v{{ version }}/process-exporter-{{ version }}.linux-amd64.tar.gz"
     args:

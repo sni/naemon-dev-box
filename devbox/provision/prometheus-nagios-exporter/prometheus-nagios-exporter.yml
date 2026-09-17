@@ -5,6 +5,8 @@
   become_method: su
   become_flags: '-l'
   tasks:
+  - debug:
+      msg: "### prometheus-nagios-exporter.yml"
   - name: "git clone nagios-prometheus-exporter"
     command: git clone https://github.com/m-lab/prometheus-nagios-exporter.git
     args:

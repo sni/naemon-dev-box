@@ -2,6 +2,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### git.yml"
   - name: "create /etc/gitconfig"
     copy: src=/box/devbox/provision/git/gitconfig dest=/etc/gitconfig owner=root group=root mode=0644
 

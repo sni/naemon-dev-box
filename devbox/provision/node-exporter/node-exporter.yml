@@ -1,6 +1,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### node-exporter.yml"
   - copy: src=/box/devbox/provision/node-exporter/data/init dest=/omd/sites/mon/etc/init.d/node-exporter owner=mon group=mon mode=0755
   - file:
       src: ../init.d/node-exporter

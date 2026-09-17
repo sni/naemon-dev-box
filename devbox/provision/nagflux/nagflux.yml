@@ -2,6 +2,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### nagflux.yml"
   - name: configure dev site
     vars:
         config: |

@@ -1,4 +1,11 @@
 ---
 - hosts: all
   tasks:
-  - copy: src=/box/devbox/provision/apache/redirect.conf dest=/etc/httpd/conf.d/redirect.conf owner=root group=root mode=0640
+  - debug:
+      msg: "### apache.yml"
+  - copy:
+      src: /box/devbox/provision/apache/redirect.conf
+      dest: /etc/httpd/conf.d/redirect.conf
+      owner: root
+      group: root
+      mode: 0640

@@ -1,0 +1,21 @@
+# build and prepare snclient
+---
+- hosts: all
+  tasks:
+- hosts: all
+  tasks:
+  - debug:
+      msg: "### snclient.yml"
+  - name: "snclient build requirements"
+    yum:
+      name:
+        - snclient
+      state: installed
+
+  - name: rebuild snclient
+    command: make build snclient
+    args:
+      chdir: /src
+      creates: /src/snclient/snclient
+
+# TODO: set initial config and start service

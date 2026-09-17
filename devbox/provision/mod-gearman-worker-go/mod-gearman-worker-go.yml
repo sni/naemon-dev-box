@@ -2,6 +2,8 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### mod-gearman-worker.yml"
   - name: "replace mod-gearman-worker-go binary path in init script"
     lineinfile:
         dest: /opt/omd/sites/dev/etc/init.d/gearman_worker

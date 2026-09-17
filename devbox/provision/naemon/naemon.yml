@@ -2,8 +2,24 @@
 ---
 - hosts: all
   tasks:
+  - debug:
+      msg: "### naemon.yml"
   - name: "naemon-core build requirements"
-    yum: name=autoconf,automake,pkgconfig,help2man,gperf,libtool,gcc,chrpath,glib2-devel,check,check-devel,perl-Test-Simple state=installed
+    yum:
+      name:
+        - autoconf
+        - automake
+        - pkgconfig
+        - help2man
+        - gperf
+        - libtool
+        - gcc
+        - chrpath
+        - glib2-devel
+        - check
+        - check-devel
+        - perl-Test-Simple
+      state: installed
   - name: "naemon-livestatus build requirements"
     yum:
       name:
