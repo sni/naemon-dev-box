@@ -6,7 +6,7 @@ export PKG_CONFIG_PATH="$(pwd)/../naemon-core"
 export C_INCLUDE_PATH="$(pwd)/../naemon-core:$(pwd)/../naemon-core/src"
 
 #LIBGEARMAN=/omd/versions/default
-LIBGEARMAN="$(pwd)/../gearmand/dest"
+LIBGEARMAN="$(pwd)/../gearmand/dest~"
 
 export CFLAGS="-fsanitize=address"
 export LDFLAGS="-fsanitize=address"

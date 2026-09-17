@@ -27,5 +27,6 @@ find . -name Makefile -exec sed -i 's/-Werror/-Wno-error/g' {} +
 
 make -j 1
 
-mkdir -p dest
-make DESTDIR=$(pwd)/dest install
+# using a dest folder which matches existing .gitignore
+mkdir -p 'dest~'
+make DESTDIR="$(pwd)/dest~" install
