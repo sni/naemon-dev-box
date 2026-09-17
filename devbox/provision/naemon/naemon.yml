@@ -42,6 +42,21 @@
         state: present
         regexp: '^# BINARY:'
         line: '# BINARY: .libs/lt-naemon'
+  - name: "set library path in init script"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/naemon
+        state: present
+        regexp: '^export LD_LIBRARY_PATH'
+        line: 'export LD_LIBRARY_PATH=/src/gearmand/dest~/lib/'
+        insertbefore: '^NAME='
+  - name: "set asan options in init script"
+    lineinfile:
+        dest: /omd/sites/dev/etc/init.d/naemon
+        state: present
+        regexp: '^export ASAN_OPTIONS'
+        line: 'export ASAN_OPTIONS=log_path=$OMD_ROOT/var/tmp/naemon.asan.log'
+        insertbefore: '^NAME='
+
   - name: "replace naemon-livestatus path in module config"
     lineinfile:
         dest: /omd/sites/dev/etc/naemon/naemon.d/livestatus.cfg
