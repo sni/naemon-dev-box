@@ -2,12 +2,26 @@
 ---
 - hosts: all
   tasks:
+  - name: configure dev site
+    vars:
+        config: |
+            NAGFLUX=on
+            INFLUXDB=on
+    shell: echo "{{ config }}" | omd config dev change
+
   - name: "replace nagflux binary path in init script"
     lineinfile:
         dest: /opt/omd/sites/dev/etc/init.d/nagflux
         state: present
         regexp: '^DAEMON'
         line: 'DAEMON=/src/nagflux/nagflux'
+
+  - name: "replace nagflux binary path in init script II"
+    lineinfile:
+        dest: /opt/omd/sites/dev/etc/init.d/nagflux
+        state: present
+        regexp: '^# BINARY:'
+        line: '# BINARY:   /src/nagflux/nagflux'
 
   - name: rebuild nagflux
     command: make build nagflux
