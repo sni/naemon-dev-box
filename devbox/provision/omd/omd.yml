@@ -118,3 +118,8 @@
   - copy: src=/box/devbox/provision/omd/data/dev/ssh.cfg dest=/omd/sites/dev/etc/naemon/conf.d/ssh.cfg owner=dev group=dev mode=0644
   - name: "change omdadmin password"
     shell: "set_admin_password omd"
+  - lineinfile:
+        dest: /omd/sites/dev/.profile
+        state: present
+        line: 'ulimit -c unlimited'
+        regexp: 'ulimit -c'

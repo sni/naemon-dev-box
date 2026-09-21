@@ -18,4 +18,21 @@
       chdir: /src
       creates: /src/snclient/snclient
 
-# TODO: set initial config and start service
+  - name: "create snclient_local.ini"
+    copy:
+      dest: /etc/snclient/snclient_local.ini
+      mode: '0644'
+      owner: root
+      group: root
+      content: |
+        [/modules]
+        CheckExternalScripts = enabled
+        CheckBuiltinPlugins = enabled
+
+        [/settings/WEB/server]
+        password = test
+
+  - name: start snclient
+    shell: killall snclient >/dev/null 2>&1 ; ( nohup /src/snclient/snclient > /dev/null 2>&1 ) &
+    args:
+      chdir: /etc/snclient

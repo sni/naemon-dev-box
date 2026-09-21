@@ -25,3 +25,21 @@
   tasks:
   - name: "activate local thruk"
     shell: "yes | /src/omd_utils/thruk_developer/install.sh /src/thruk"
+
+  - name: "activate thruk agents plugin"
+    shell: "thruk plugin enable agents"
+    args:
+      creates: /omd/sites/dev/etc/thruk/plugins-enable/agents
+
+  - name: "copy agents example config"
+    shell: cp /src/thruk/t/scenarios/agents-plugin/http-backend/agents.cfg /omd/sites/dev/etc/thruk/thruk_local.d/agents.cfg
+
+  - name: "activate thruk node-control plugin"
+    shell: "thruk plugin enable node-control"
+    args:
+      creates: /omd/sites/dev/etc/thruk/plugins-enable/node-control
+
+  - name: "activate thruk omd plugin"
+    shell: "thruk plugin enable omd"
+    args:
+      creates: /omd/sites/dev/etc/thruk/plugins-enable/omd
