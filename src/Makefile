@@ -91,7 +91,8 @@ status:
 			echo "dirty"; \
 		fi; \
 		cd ..; \
-	done
+	done; \
+	chmod 666 ./.tmp/.bash_* >/dev/null 2>&1;
 
 update:
 	@echo "*** update:"
@@ -108,7 +109,8 @@ update:
 			echo "dirty"; \
 		fi; \
 		cd ..; \
-	done
+	done; \
+	chmod 666 ./.tmp/.bash_* >/dev/null 2>&1;
 
 clone:
 	@echo "*** clone:"
@@ -150,4 +152,5 @@ clean:
 		chown -R $(OWNER) . >/dev/null 2>&1; \
 		echo "done"; \
 		cd ..; \
-	done
+	done; \
+	chmod 666 ./.tmp/.bash_* >/dev/null 2>&1;

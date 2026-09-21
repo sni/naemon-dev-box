@@ -50,3 +50,4 @@ shell:
 
 trychown:
 	-sudo chown $$USER: -R src/
+	-chmod 666 src/.tmp/.bash_* >/dev/null 2>&1
