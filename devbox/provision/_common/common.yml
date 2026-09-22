@@ -13,6 +13,7 @@
         - ripgrep
         - rsync
         - telnet
+        - tmux
         - valgrind
         - vim
         - wget
