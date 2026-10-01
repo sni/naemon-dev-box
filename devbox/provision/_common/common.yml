@@ -10,6 +10,7 @@
         - git
         - glibc-langpack-en.x86_64
         - lsof
+        - jq
         - ripgrep
         - rsync
         - telnet
