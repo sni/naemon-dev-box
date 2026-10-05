@@ -9,8 +9,11 @@
       name:
         - make
         - perl-Module-Install
-        - npm
       state: installed
+  - name: "thruk build npm requirements"
+    command: yum install -y npm
+    args:
+      creates: /usr/lib/node_modules/npm
   - name: rebuild thruk
     command: make build thruk
     args:
