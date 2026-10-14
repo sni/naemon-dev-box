@@ -9,6 +9,32 @@
       name:
         - make
         - perl-Module-Install
+        - perl-App-cpanminus
+        - perl-Cpanel-JSON-XS
+        - perl-Template-Toolkit
+        - perl-Plack
+        - perl-Plack-Test
+        - perl-Date-Calc
+        - perl-Date-Manip
+        - perl-Digest-SHA
+        - perl-libwww-perl
+        - perl-HTML-Parser
+        - perl-GD
+        - perl-Crypt-Rijndael
+        - perl-MIME-Lite
+        - perl-Log-Log4perl
+        - perl-Pod-Usage
+        - perl-Module-Load
+        - perl-Mozilla-CA
+        - perl-Test-Vars
+        - perl-Test-Pod
+        - perl-LWP-Protocol-https
+        - perl-Test-Perl-Critic
+        - perl-HTML-Lint
+        - perl-IO-String
+        - perl-DBD-MySQL
+        - perl-Test-Pod-Coverage
+        - perl-Devel-Cycle
       state: installed
   - name: "thruk build npm requirements"
     command: yum install -y npm
@@ -18,7 +44,9 @@
     command: make build thruk
     args:
       chdir: /src
-      creates: /src/thruk/Makefile
+      creates:
+        - /src/thruk/Makefile
+        - /omd/sites/dev/local/lib/perl5/lib/perl5/File/ChangeNotify
 
 - hosts: all
   become: true

@@ -9,8 +9,8 @@
 - import_playbook: apache/apache.yml
 - import_playbook: naemon/naemon.yml
 - import_playbook: golang/golang.yml
-#- import_playbook: process-exporter/process-exporter.yml
-#- import_playbook: node-exporter/node-exporter.yml
+- import_playbook: process-exporter/process-exporter.yml
+- import_playbook: node-exporter/node-exporter.yml
 #- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
 - import_playbook: thruk/thruk.yml
 - import_playbook: gearmand/gearmand.yml
