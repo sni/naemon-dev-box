@@ -1,6 +1,12 @@
 #!/usr/bin/make -f
 
-PROJECTS=$(shell ls -d */.git 2>/dev/null | sed 's%/.git%%' | sort)
+SKIP_PROJECTS=$(shell grep -vE '^[[:space:]]*(#|$$)' .skip_builds 2>/dev/null)
+PROJECTS=$(filter-out $(SKIP_PROJECTS),$(shell ls -d */.git 2>/dev/null | sed 's%/.git%%' | sort))
+ifneq ($(SKIP_PROJECTS),)
+ifeq ($(MAKELEVEL),0)
+$(info *** skipping: $(SKIP_PROJECTS))
+endif
+endif
 SHELL=bash
 OWNER=$(shell stat -c "%u" .)
 CLONE_URLS=$(shell cat .clone_urls)
