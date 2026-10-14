@@ -9,7 +9,7 @@ endif
 endif
 SHELL=bash
 OWNER=$(shell stat -c "%u" .)
-CLONE_URLS=$(shell cat .clone_urls)
+CLONE_URLS=$(shell cat .clone_urls .clone_urls_extra 2>/dev/null | grep -vE '^[[:space:]]*(#|$$)')
 GIT_USER=sni
 
 .DEFAULT_GOAL := help

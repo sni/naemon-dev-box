@@ -4,3 +4,4 @@
 !.builds
 !.builds/*
 !.clone_urls
+.clone_urls_extra
