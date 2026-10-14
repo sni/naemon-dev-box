@@ -4,26 +4,43 @@
   - debug:
       msg: "### main.yml"
 - import_playbook: _common/common.yml
+  tags: [_common]
 
 - import_playbook: omd/omd.yml
+  tags: [omd]
 - import_playbook: apache/apache.yml
+  tags: [apache]
 - import_playbook: naemon/naemon.yml
+  tags: [naemon]
 - import_playbook: golang/golang.yml
+  tags: [golang]
 - import_playbook: process-exporter/process-exporter.yml
+  tags: [process-exporter]
 - import_playbook: node-exporter/node-exporter.yml
+  tags: [node-exporter]
 #- import_playbook: prometheus-nagios-exporter/prometheus-nagios-exporter.yml
+#  tags: [prometheus-nagios-exporter]
 - import_playbook: thruk/thruk.yml
+  tags: [thruk]
 - import_playbook: gearmand/gearmand.yml
+  tags: [gearmand]
 - import_playbook: mod-gearman/mod-gearman.yml
+  tags: [mod-gearman]
 - import_playbook: mod-gearman-worker-go/mod-gearman-worker-go.yml
+  tags: [mod-gearman-worker-go]
 - import_playbook: nagflux/nagflux.yml
+  tags: [nagflux]
 - import_playbook: histou/histou.yml
+  tags: [histou]
 - import_playbook: snclient/snclient.yml
+  tags: [snclient]
 
 # this should be the last regular playbook
 - import_playbook: git/git.yml
+  tags: [git]
 
 - hosts: all
   tasks:
   - name: "omd restart mon"
     shell: "omd restart mon"
+

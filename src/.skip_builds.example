@@ -1,0 +1,4 @@
+# Playbooks to skip during provisioning (one tag per line).
+# Rename file to: .skip_builds and
+# Add a tag on its own line below to skip that playbook, e.g.:
+#gearmand
