@@ -8,6 +8,8 @@
     yum:
       name:
         - make
+        - asciidoc
+        - dos2unix
         - perl-Module-Install
         - perl-App-cpanminus
         - perl-Cpanel-JSON-XS
