@@ -21,7 +21,7 @@
      state: installed
 
   - name: set motd
-    shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh\n*********\n" > /etc/motd
+    shell: echo -e "*********\nYou can always reprovision by running\n%>bash /box/devbox/provision/ansible.sh [--tags=...]\n*********\n" > /etc/motd
 
   - name: "create dev.sh script"
     copy:

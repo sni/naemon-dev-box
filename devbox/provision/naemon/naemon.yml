@@ -63,13 +63,45 @@
         state: present
         regexp: '^broker_module'
         line: 'broker_module=/src/naemon-livestatus/src/.libs/livestatus.so num_client_threads=20 pnp_path=/omd/sites/dev/var/pnp4nagios/perfdata /omd/sites/dev/tmp/run/live'
+
+  - name: "replace naemon-vimcrypt path in module config"
+    lineinfile:
+        dest: /omd/sites/dev/etc/naemon/naemon.d/vimvault.cfg
+        state: present
+        regexp: '^broker_module'
+        line: 'broker_module=/src/naemon-vimcrypt-vault-broker/.libs/naemon_vimvault.so vault=etc/naemon/vault.cfg'
+  - name: "set master password for naemon-vimcrypt"
+    lineinfile:
+        dest: /omd/sites/dev/etc/naemon/naemon.d/vimvault.cfg
+        state: present
+        regexp: '^NAEMON_VIM_MASTER_PASSWORD'
+        line: 'NAEMON_VIM_MASTER_PASSWORD=test'
+  - name: "create vimcrypt vault file"
+    shell: |
+      vim -Nu NONE -n -es "/omd/sites/dev/etc/naemon/vault.cfg" \
+        "+set cm=blowfish2" \
+        "+set key=test" \
+        "+call setline(1, '\$VAULT:TESTVAR\$=test')" \
+        "+wq"
+      chown dev:dev "/omd/sites/dev/etc/naemon/vault.cfg"
+    args:
+      chdir: /src
+      creates: /omd/sites/dev/etc/naemon/vault.cfg
+
   - name: rebuild naemon-core
     command: make build naemon-core
     args:
       chdir: /src
       creates: /src/naemon-core/src/naemon/.libs/naemon
+
   - name: rebuild naemon-livestatus
     command: make build naemon-livestatus
     args:
       chdir: /src
       creates: /src/naemon-livestatus/src/.libs/livestatus.so
+
+  - name: rebuild naemon-vimvault
+    command: make build naemon-vimcrypt-vault-broker
+    args:
+      chdir: /src
+      creates: /src/naemon-vimcrypt-vault-broker/naemon_vimvault_la-module.o
