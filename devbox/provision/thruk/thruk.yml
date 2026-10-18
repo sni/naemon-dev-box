@@ -48,6 +48,25 @@
         - /src/thruk/Makefile
         - /omd/sites/dev/local/lib/perl5/lib/perl5/File/ChangeNotify
 
+  - name: add more perl modules
+    shell: |
+        cpanm -n \
+            File::BOM \
+            Devel::Gladiator \
+            Excel::Template \
+            FCGI \
+            HTML::Escape \
+            LWP::Protocol::connect \
+            Perl::Critic::Policy::Dynamic::NoIndirect \
+            Perl::Critic::Policy::Modules::ProhibitPOSIXimport \
+            Perl::Critic::Policy::NamingConventions::ProhibitMixedCaseSubs \
+            Perl::Critic::Policy::TooMuchCode::ProhibitUnusedImport \
+            Perl::Critic::Policy::ValuesAndExpressions::ProhibitAccessOfPrivateData \
+            Test::Cmd \
+            Tie::IxHash
+    args:
+      creates: /usr/local/share/perl5/*/File/BOM.pm
+
 - hosts: all
   become: true
   become_user: dev
