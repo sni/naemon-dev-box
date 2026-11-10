@@ -37,6 +37,7 @@
         - perl-DBD-MySQL
         - perl-Test-Pod-Coverage
         - perl-Devel-Cycle
+        - tidy
       state: installed
   - name: "thruk build npm requirements"
     command: yum install -y npm
