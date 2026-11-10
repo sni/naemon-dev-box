@@ -14,3 +14,4 @@ is OMD site `dev` which then uses the binaries from the `/src` folder.
 ## Rules
 
 - Every build or test is supposed to run in the container.
+- Documentation, comments and general text must follow STE80 style (80% of the way to ASD-STE100).

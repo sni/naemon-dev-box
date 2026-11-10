@@ -16,3 +16,4 @@ This is the Naemon/OMD dev container (see /box/AGENTS.md on the host for more co
 - Avoid duplicate code.
 - Do not add unnecessary tests.
 - Follow clean code principles; avoid bad practices like `goto`.
+- Documentation, comments and general text must follow STE80 style (80% of the way to ASD-STE100).
