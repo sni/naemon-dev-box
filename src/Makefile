@@ -9,7 +9,6 @@ endif
 endif
 SHELL=bash
 OWNER=$(shell stat -c "%u" .)
-CLONE_URLS=$(shell cat .clone_urls .clone_urls_extra 2>/dev/null | grep -vE '^[[:space:]]*(#|$$)')
 GIT_USER=sni
 
 .DEFAULT_GOAL := help
@@ -118,36 +117,39 @@ update:
 	done; \
 	chmod 666 ./.tmp/.bash_* >/dev/null 2>&1;
 
+# one line per entry: <url> [folder-name], folder-name defaults to the repo name
 clone:
 	@echo "*** clone:"
-	@set -e; for p in $(CLONE_URLS); do \
+	@set -e; \
+	while read -r p dir; do \
 		case "$$p" in \
 			http://*|https://*) url=$$p; path=$${p#*://} ;; \
 			git@*:*) path=$${p#git@}; path=$${path/:/\/}; url=https://$$path ;; \
 			*) echo "Unsupported clone URL: $$p" >&2; exit 1 ;; \
 		esac; \
 		host=$${path%%/*}; path=$${path#*/}; \
-		owner=$${path%%/*}; repo=$${path#*/}; dir=$${repo##*/}; dir=$${dir%.git}; \
-		printf "%-30s\n" $$p; \
-		if [ -d "$$dir" ]; then \
+		owner=$${path%%/*}; repo=$${path#*/}; \
+		if [ -n "$$dir" ]; then target=$$dir; else target=$${repo##*/}; target=$${target%.git}; fi; \
+		printf "%-30s\n" "$$p $$dir"; \
+		if [ -d "$$target" ]; then \
 			echo "  -> exists already"; \
 			continue; \
 		fi; \
 		remote=upstream_origin; \
 		if [ "$$owner" = $(GIT_USER) ]; then remote=$(GIT_USER); fi; \
-		git clone --origin "$$remote" "$$url" "$$dir"; \
-		git -C "$$dir" remote set-url --push "$$remote" "git@$$host:$$path"; \
+		git clone --origin "$$remote" "$$url" "$$target"; \
+		git -C "$$target" remote set-url --push "$$remote" "git@$$host:$$path"; \
 		if [ "$$owner" != $(GIT_USER) ]; then \
 			set +e; \
-			git -C "$$dir" branch -m upstream && \
-			git -C "$$dir" remote add $(GIT_USER) "$${url%%://*}://$$host/$(GIT_USER)/$$repo" && \
-			git -C "$$dir" remote set-url --push $(GIT_USER) "git@$$host:$(GIT_USER)/$$repo" && \
-			git -C "$$dir" fetch $(GIT_USER) && \
-			git -C "$$dir" remote set-head $(GIT_USER) --auto && \
-			git -C "$$dir" branch --track $(GIT_USER) $(GIT_USER)/HEAD && \
+			git -C "$$target" branch -m upstream && \
+			git -C "$$target" remote add $(GIT_USER) "$${url%%://*}://$$host/$(GIT_USER)/$$repo" && \
+			git -C "$$target" remote set-url --push $(GIT_USER) "git@$$host:$(GIT_USER)/$$repo" && \
+			git -C "$$target" fetch $(GIT_USER) && \
+			git -C "$$target" remote set-head $(GIT_USER) --auto && \
+			git -C "$$target" branch --track $(GIT_USER) $(GIT_USER)/HEAD && \
 			set -e; \
 		fi; \
-	done
+	done < <(cat .clone_urls .clone_urls_extra 2>/dev/null | grep -vE '^[[:space:]]*(#|$$)')
 
 clean:
 	@echo "*** clean:"
