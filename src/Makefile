@@ -58,7 +58,8 @@ help:
 	@echo "make build <folder>  # run .builds/<folder>.sh, or make in the folder"
 	@echo "make status          # show status of cloned projects"
 	@echo "make update          # run git pull for clean checkouts (git pull)"
-	@echo "make clean           # remove untracked files and directories (git clean)"
+	@echo "make clean           # remove untracked files and directories (make clean)"
+	@echo "make cleanforce      # remove untracked files and directories (git clean)"
 	@echo "make clone           # clone all projects"
 	@echo "make help            # show this help message"
 
@@ -153,6 +154,18 @@ clone:
 
 clean:
 	@echo "*** clean:"
+	@for p in $(PROJECTS); do \
+		cd $$p; \
+		printf "%-30s" $$p; \
+		make clean 2>&1; \
+		chown -R $(OWNER) . >/dev/null 2>&1; \
+		echo "done"; \
+		cd ..; \
+	done; \
+	chmod 666 ./.tmp/.bash_* >/dev/null 2>&1;
+
+cleanforce:
+	@echo "*** cleanforce:"
 	@for p in $(PROJECTS); do \
 		cd $$p; \
 		printf "%-30s" $$p; \

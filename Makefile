@@ -4,7 +4,7 @@ SHELL=bash
 
 help:
 	@echo "make help"
-	@echo "make status|update|build|clean"
+	@echo "make status|update|build|clean|cleanforce"
 	@echo "make prepare|update|shell"
 
 build:
@@ -23,6 +23,10 @@ clean: trychown
 	docker compose kill
 	docker compose rm -f
 	-docker network prune -f
+
+cleanforce: trychown
+	$(MAKE) clean
+	$(MAKE) -C src cleanforce
 
 
 prepare:
